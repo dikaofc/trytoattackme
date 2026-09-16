@@ -4,24 +4,64 @@
       <stop stop-color="#070a14"/>
       <stop offset="1" stop-color="#111b3d"/>
     </linearGradient>
+    <linearGradient id="meter" x1="0" y1="0" x2="1" y2="0">
+      <stop stop-color="#00ff88"/>
+      <stop offset=".55" stop-color="#ffb700"/>
+      <stop offset="1" stop-color="#ff2e4a"/>
+    </linearGradient>
     <linearGradient id="line" x1="0" y1="0" x2="1" y2="0">
       <stop stop-color="#00ff88"/>
       <stop offset="1" stop-color="#28d7ff"/>
     </linearGradient>
-    <filter id="glow"><feGaussianBlur stdDeviation="10" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <filter id="glow"><feGaussianBlur stdDeviation="8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
   </defs>
+
+  <!-- background -->
   <rect width="1200" height="630" fill="url(#bg)"/>
-  <circle cx="1040" cy="80" r="220" fill="#00ff88" opacity=".07"/>
-  <circle cx="140" cy="600" r="280" fill="#28d7ff" opacity=".06"/>
-  <path d="M0 520 C180 470 250 545 390 490 S650 430 790 480 S1030 520 1200 420" fill="none" stroke="url(#line)" stroke-width="5" opacity=".8" filter="url(#glow)"/>
-  <rect x="72" y="74" width="1056" height="482" rx="28" fill="#11162e" fill-opacity=".8" stroke="#26345f" stroke-width="2"/>
-  <circle cx="112" cy="120" r="10" fill="#00ff88" filter="url(#glow)"/>
-  <text x="145" y="130" fill="#edf4ff" font-family="monospace" font-size="28" font-weight="700" letter-spacing="5">TRYTO<tspan fill="#00ff88">ATTACK</tspan>ME</text>
-  <text x="112" y="246" fill="#edf4ff" font-family="monospace" font-size="66" font-weight="800">DDoS POWER METER</text>
-  <text x="116" y="305" fill="#8b97b8" font-family="monospace" font-size="24">Live traffic telemetry • rate-limit shield • request logs</text>
-  <rect x="116" y="374" width="720" height="22" rx="11" fill="#080c20" stroke="#26345f"/>
-  <rect x="116" y="374" width="470" height="22" rx="11" fill="url(#line)"/>
-  <text x="116" y="450" fill="#00ff88" font-family="monospace" font-size="22">● MONITORING</text>
-  <text x="116" y="490" fill="#28d7ff" font-family="monospace" font-size="18">AUTHORIZED TESTING ONLY</text>
-  <text x="940" y="488" fill="#8b97b8" font-family="monospace" font-size="18">VERCEL / LIVE</text>
+  <circle cx="1050" cy="90" r="220" fill="#00ff88" opacity=".06"/>
+  <circle cx="130" cy="580" r="260" fill="#28d7ff" opacity=".05"/>
+
+  <!-- card -->
+  <rect x="60" y="60" width="1080" height="510" rx="24" fill="#11162e" fill-opacity=".85" stroke="#1f2a52" stroke-width="1.5"/>
+
+  <!-- brand dot + name -->
+  <circle cx="104" cy="114" r="9" fill="#00ff88" filter="url(#glow)"/>
+  <text x="130" y="122" fill="#edf4ff" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="26" font-weight="800" letter-spacing="4">TRYTO<tspan fill="#00ff88">ATTACK</tspan>ME</text>
+
+  <!-- title -->
+  <text x="104" y="210" fill="#edf4ff" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="56" font-weight="800" letter-spacing="2">DDoS POWER METER</text>
+
+  <!-- subtitle -->
+  <text x="108" y="260" fill="#8b97b8" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="20">Live traffic telemetry · rate-limit shield · request logs</text>
+
+  <!-- power meter bar -->
+  <rect x="108" y="310" width="700" height="20" rx="10" fill="#080c20" stroke="#1f2a52" stroke-width="1"/>
+  <rect x="108" y="310" width="420" height="20" rx="10" fill="url(#meter)"/>
+
+  <!-- status -->
+  <text x="108" y="380" fill="#00ff88" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="22" font-weight="700">● MONITORING</text>
+
+  <!-- KPI boxes -->
+  <rect x="108" y="410" width="140" height="56" rx="10" fill="#0a0e24" stroke="#1f2a52"/>
+  <text x="118" y="432" fill="#8b97b8" font-family="monospace" font-size="9" letter-spacing="1">TOTAL REQ</text>
+  <text x="118" y="454" fill="#edf4ff" font-family="monospace" font-size="20" font-weight="800">1,247</text>
+
+  <rect x="262" y="410" width="140" height="56" rx="10" fill="#0a0e24" stroke="#1f2a52"/>
+  <text x="272" y="432" fill="#8b97b8" font-family="monospace" font-size="9" letter-spacing="1">CURRENT RPS</text>
+  <text x="272" y="454" fill="#28d7ff" font-family="monospace" font-size="20" font-weight="800">42</text>
+
+  <rect x="416" y="410" width="140" height="56" rx="10" fill="#0a0e24" stroke="#1f2a52"/>
+  <text x="426" y="432" fill="#8b97b8" font-family="monospace" font-size="9" letter-spacing="1">BLOCKED</text>
+  <text x="426" y="454" fill="#ff2e4a" font-family="monospace" font-size="20" font-weight="800">389</text>
+
+  <rect x="570" y="410" width="140" height="56" rx="10" fill="#0a0e24" stroke="#1f2a52"/>
+  <text x="580" y="432" fill="#8b97b8" font-family="monospace" font-size="9" letter-spacing="1">LATENCY P95</text>
+  <text x="580" y="454" fill="#ffb700" font-family="monospace" font-size="20" font-weight="800">12ms</text>
+
+  <!-- waveform decoration -->
+  <path d="M60 530 C120 510 180 540 240 520 S360 490 420 510 S540 530 600 500 S720 480 780 510 S900 530 960 500 S1080 480 1140 510" fill="none" stroke="url(#line)" stroke-width="3" opacity=".6" filter="url(#glow)"/>
+
+  <!-- footer text -->
+  <text x="108" y="546" fill="#8b97b8" font-family="monospace" font-size="14">AUTHORIZED TESTING ONLY</text>
+  <text x="900" y="546" fill="#8b97b8" font-family="monospace" font-size="14" text-anchor="end">trytoattackme.vercel.app</text>
 </svg>
