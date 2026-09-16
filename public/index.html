@@ -40,14 +40,14 @@
 
 <style>
 :root{
-  --bg:#070a14; --bg2:#0b1022; --card:#121839; --card2:#151c3b;
-  --line:#1f2a52; --line2:#24315e; --text:#edf4ff; --muted:#8b97b8;
-  --neon:#00ff88; --cyan:#28d7ff; --red:#ff2e4a; --amber:#ffb700;
-  --r:16px; --r2:18px; --shadow:0 18px 60px rgba(0,0,0,.28);
+  --bg:#090a0c; --bg2:#0e1013; --card:#111317; --card2:#17191e;
+  --line:rgba(255,255,255,.08); --line2:rgba(255,255,255,.16); --text:#f5f5f2; --muted:#8c919b;
+  --neon:#b8f2d0; --cyan:#a8d8e8; --red:#e58a91; --amber:#e8c681;
+  --r:16px; --r2:24px; --shadow:0 18px 60px rgba(0,0,0,.22);
 }
 * { margin:0; padding:0; box-sizing:border-box }
 html { background:var(--bg); scrollbar-color:var(--line2) transparent }
-body { font-family:ui-monospace,SFMono-Regular,Menlo,monospace; background:linear-gradient(180deg,var(--bg),var(--bg2)); color:var(--text); min-height:100vh; line-height:1.5 }
+body { font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; background:radial-gradient(circle at 50% -20%,#20252a 0,transparent 38rem),linear-gradient(180deg,var(--bg),var(--bg2)); color:var(--text); min-height:100vh; line-height:1.5 }
 a { color:var(--neon); text-underline-offset:3px }
 a:focus-visible, button:focus-visible, input:focus-visible { outline:2px solid var(--cyan); outline-offset:2px }
 .sr-only { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap }
@@ -55,7 +55,8 @@ a:focus-visible, button:focus-visible, input:focus-visible { outline:2px solid v
 header { position:sticky; top:0; z-index:20; background:rgba(7,10,20,.82); backdrop-filter:blur(16px); border-bottom:1px solid rgba(64,86,150,.28) }
 .hd { max-width:1400px; margin:0 auto; padding:14px 18px; display:flex; gap:16px; align-items:center; justify-content:space-between; flex-wrap:wrap }
 .brand { font-weight:800; letter-spacing:.1em; font-size:14px; display:flex; align-items:center; gap:8px }
-.brand::before { content:""; width:8px; height:8px; border-radius:50%; background:var(--neon); box-shadow:0 0 14px var(--neon) }
+.brand::before { content:""; width:8px; height:8px; border-radius:50%; background:var(--neon); box-shadow:0 0 14px rgba(184,242,208,.5); animation:breathe 2.4s ease-in-out infinite }
+@keyframes breathe{50%{opacity:.45;transform:scale(.75)}}
 .brand b { color:var(--neon) }
 .brand small { font-weight:400; color:var(--muted); letter-spacing:.03em }
 .pills { display:flex; gap:8px; flex-wrap:wrap; align-items:center }
@@ -64,12 +65,23 @@ header { position:sticky; top:0; z-index:20; background:rgba(7,10,20,.82); backd
 
 .wrap { max-width:1400px; margin:0 auto; padding:24px 18px 40px }
 .eyebrow { color:var(--cyan); font-size:10px; letter-spacing:.16em; margin-bottom:14px }
-.card { background:linear-gradient(180deg,rgba(21,28,59,.92),rgba(12,17,39,.9)); border:1px solid var(--line); border-radius:var(--r2); padding:16px; box-shadow:var(--shadow); position:relative }
+.card { background:linear-gradient(180deg,rgba(23,25,30,.94),rgba(17,19,23,.92)); border:1px solid var(--line); border-radius:var(--r2); padding:18px; box-shadow:var(--shadow); position:relative; transition:transform 280ms ease,border-color 280ms ease }
+.card:hover { transform:translateY(-2px); border-color:var(--line2) }
 .label { font-size:10px; letter-spacing:.12em; color:var(--muted); text-transform:uppercase }
 .big { font-size:32px; font-weight:800; line-height:1; letter-spacing:-.03em }
 .big small { font-size:12px; color:var(--muted); font-weight:400 }
 
-.hero { display:grid; grid-template-columns:1.2fr .8fr; gap:12px }
+.hero { display:grid; grid-template-columns:1.35fr .65fr; gap:12px }
+.power-core { min-height:390px; display:grid; place-items:center; text-align:center; overflow:hidden; background:radial-gradient(circle at 50% 52%,rgba(184,242,208,.08),transparent 13rem),linear-gradient(180deg,rgba(23,25,30,.96),rgba(17,19,23,.92)) }
+.core-shell { width:230px; height:230px; border:1px solid rgba(184,242,208,.35); border-radius:50%; display:grid; place-items:center; position:relative; box-shadow:0 0 0 18px rgba(184,242,208,.025),0 0 70px rgba(184,242,208,.12),inset 0 0 40px rgba(184,242,208,.06); animation:core-float 5s ease-in-out infinite }
+.core-shell:before,.core-shell:after { content:""; position:absolute; inset:16px; border:1px solid rgba(168,216,232,.22); border-radius:50%; animation:spin 16s linear infinite }
+.core-shell:after { inset:34px; border-style:dashed; border-color:rgba(184,242,208,.2); animation-direction:reverse; animation-duration:11s }
+.core-value { position:relative; z-index:1; font:700 48px ui-monospace,SFMono-Regular,Menlo,monospace; letter-spacing:-.08em }
+.core-value small { display:block; font:500 11px ui-sans-serif,system-ui,sans-serif; color:var(--muted); letter-spacing:.16em; text-transform:uppercase; margin-top:7px }
+@keyframes spin{to{transform:rotate(360deg)}} @keyframes core-float{50%{transform:translateY(-4px)}}
+.power-model { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:18px; width:min(100%,620px) }
+.model-stat { border-top:1px solid var(--line); padding-top:9px; text-align:left; font:11px ui-monospace,SFMono-Regular,Menlo,monospace; color:var(--muted) }
+.model-stat b { display:block; color:var(--text); font-size:16px; margin-top:2px }
 .meter { height:14px; background:#080c20; border:1px solid var(--line); border-radius:999px; overflow:hidden; margin-top:12px; position:relative }
 .meter>i { display:block; height:100%; width:0%; background:linear-gradient(90deg,var(--neon),var(--amber) 55%,var(--red)); transition:width .35s }
 .meter>span { position:absolute; inset:0; display:grid; place-items:center; font-size:10px; font-weight:700; letter-spacing:.06em }
@@ -108,6 +120,7 @@ tr.bad { background:rgba(255,46,74,.06) }
 .badge.ok { color:var(--neon); border-color:rgba(0,255,136,.3); background:rgba(0,255,136,.1) }
 .badge.no { color:var(--red); border-color:rgba(255,46,74,.35); background:rgba(255,46,74,.12) }
 .cols { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:12px }
+.bottom-nav { display:none }
 .bar { height:6px; background:#0a0e24; border:1px solid var(--line); border-radius:999px; overflow:hidden; margin-top:4px }
 .bar>i { display:block; height:100%; background:var(--neon); width:0% }
 code { background:#080c20; border:1px solid var(--line); padding:2px 6px; border-radius:6px; color:var(--cyan); font-size:11px }
@@ -122,7 +135,7 @@ code { background:#080c20; border:1px solid var(--line); padding:2px 6px; border
 
 @media(max-width:980px){ .hero,.grid2,.cols { grid-template-columns:1fr } }
 @media(max-width:900px){ .kpis { grid-template-columns:repeat(2,1fr) } }
-@media(max-width:520px){ .kpis { grid-template-columns:1fr } .wrap,.hd { padding-left:12px; padding-right:12px } .brand { font-size:12px } .brand small { display:none } }
+@media(max-width:520px){ .kpis { grid-template-columns:1fr } .wrap,.hd { padding-left:12px; padding-right:12px } .brand { font-size:12px } .brand small { display:none } .power-core{min-height:350px}.core-shell{width:190px;height:190px}.core-value{font-size:40px}.bottom-nav{display:flex;position:fixed;z-index:30;bottom:12px;left:12px;right:12px;justify-content:space-around;padding:10px;border:1px solid var(--line2);border-radius:18px;background:rgba(17,19,23,.9);backdrop-filter:blur(18px);box-shadow:var(--shadow)}.bottom-nav a{font-size:10px;color:var(--muted);text-decoration:none;text-align:center}.bottom-nav a:first-child{color:var(--text)} }
 @media(prefers-reduced-motion:reduce){ * { transition:none!important; animation:none!important } }
 </style>
 </head>
@@ -142,10 +155,20 @@ code { background:#080c20; border:1px solid var(--line); padding:2px 6px; border
   <p class="eyebrow">LIVE TELEMETRY · AUTHORIZED TESTING ONLY</p>
 
   <section class="hero" aria-label="Power and shield">
-    <div class="card">
-      <div class="label">Attack Power</div>
-      <div class="big" id="power">0% <small id="level">CALM</small></div>
-      <div class="meter" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="meterWrap"><i id="powerBar"></i><span id="powerText">0% — shield holding</span></div>
+    <div class="card power-core">
+      <div>
+        <div class="label">Attack Power / current state</div>
+        <div class="core-shell">
+          <div class="core-value" id="power">0%<small id="level">nominal traffic</small></div>
+        </div>
+        <div class="mini" id="powerText" style="margin-top:14px">shield holding · 0 rps</div>
+        <div class="power-model" aria-label="Power model">
+          <div class="model-stat">RPS<b id="powerRps">0%</b></div>
+          <div class="model-stat">UNIQUE IP<b id="powerIps">0%</b></div>
+          <div class="model-stat">BLOCK RATE<b id="powerBlock">0%</b></div>
+        </div>
+      </div>
+      <div class="meter" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="meterWrap" style="display:none"><i id="powerBar"></i></div>
       <p class="mini" style="margin-top:8px">Power dari RPS + IP unik + block rate. 100% = beban penuh. Sumber: hit ke <code>/api/hit</code>.</p>
       <div style="display:flex;gap:12px;margin-top:12px;flex-wrap:wrap">
         <span class="mini">endpoint: <code>/api/hit</code></span>
@@ -220,6 +243,7 @@ code { background:#080c20; border:1px solid var(--line); padding:2px 6px; border
     <span class="mini">TRYTOATTACKME · defensive traffic observability · live update setiap request</span>
     <span class="mini"><a href="/api/stats">stats</a> · <a href="/api/hit">test endpoint</a></span>
   </footer>
+  <nav class="bottom-nav" aria-label="Mobile navigation"><a href="#main">MONITOR</a><a href="#chart">TRAFFIC</a><a href="#shieldMeta">SHIELD</a><a href="#tbody">LOGS</a></nav>
 </main>
 
 <script>
@@ -297,10 +321,13 @@ async function loadStats(){
   $("b60").textContent = s.blocked60;
   $("latAvg").innerHTML = s.latency.avg+"<small> ms avg</small>";
   $("p50").textContent = s.latency.p50; $("p95").textContent = s.latency.p95; $("p99").textContent = s.latency.p99;
-  $("power").innerHTML = s.power+"% <small>"+esc(s.level)+"</small>";
+  $("power").innerHTML = s.power+"%<small>"+esc(s.level === "CALM" ? "nominal traffic" : s.level.toLowerCase())+"</small>";
   $("powerBar").style.width = s.power+"%";
   $("meterWrap").setAttribute("aria-valuenow", String(s.power));
-  $("powerText").textContent = s.power+"% — "+ (s.underAttack ? "UNDER ATTACK" : "shield holding");
+  $("powerText").textContent = (s.underAttack ? "elevated traffic" : "shield holding")+" · "+s.curRps+" rps";
+  $("powerRps").textContent = Math.min(100, Math.round((s.curRps / 80) * 100))+"%";
+  $("powerIps").textContent = Math.min(100, Math.round((s.unique / 50) * 100))+"%";
+  $("powerBlock").textContent = s.total ? Math.round((s.blocked / s.total) * 100)+"%" : "0%";
   $("uptime").textContent = "up "+Math.floor(s.uptime/1000)+"s";
   $("peak").textContent = "peak "+s.peak+" rps";
 
