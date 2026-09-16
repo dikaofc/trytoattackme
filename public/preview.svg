@@ -1,67 +1,55 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
   <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-      <stop stop-color="#070a14"/>
-      <stop offset="1" stop-color="#111b3d"/>
+    <linearGradient id="bg" x1="0" y1="0" x2=".6" y2="1">
+      <stop stop-color="#090a0c"/>
+      <stop offset="1" stop-color="#111317"/>
     </linearGradient>
-    <linearGradient id="meter" x1="0" y1="0" x2="1" y2="0">
-      <stop stop-color="#00ff88"/>
-      <stop offset=".55" stop-color="#ffb700"/>
-      <stop offset="1" stop-color="#ff2e4a"/>
+    <linearGradient id="ring" x1="0" y1="0" x2="1" y2="0">
+      <stop stop-color="#00d4aa" stop-opacity=".6"/>
+      <stop offset="1" stop-color="#00d4aa" stop-opacity=".15"/>
     </linearGradient>
-    <linearGradient id="line" x1="0" y1="0" x2="1" y2="0">
-      <stop stop-color="#00ff88"/>
-      <stop offset="1" stop-color="#28d7ff"/>
-    </linearGradient>
-    <filter id="glow"><feGaussianBlur stdDeviation="8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <filter id="glow"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
   </defs>
 
-  <!-- background -->
   <rect width="1200" height="630" fill="url(#bg)"/>
-  <circle cx="1050" cy="90" r="220" fill="#00ff88" opacity=".06"/>
-  <circle cx="130" cy="580" r="260" fill="#28d7ff" opacity=".05"/>
 
   <!-- card -->
-  <rect x="60" y="60" width="1080" height="510" rx="24" fill="#11162e" fill-opacity=".85" stroke="#1f2a52" stroke-width="1.5"/>
+  <rect x="80" y="70" width="1040" height="490" rx="20" fill="#111317" fill-opacity=".9" stroke="rgba(255,255,255,.08)" stroke-width="1"/>
 
-  <!-- brand dot + name -->
-  <circle cx="104" cy="114" r="9" fill="#00ff88" filter="url(#glow)"/>
-  <text x="130" y="122" fill="#edf4ff" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="26" font-weight="800" letter-spacing="4">TRYTO<tspan fill="#00ff88">ATTACK</tspan>ME</text>
+  <!-- brand -->
+  <text x="120" y="130" fill="#f5f5f2" font-family="Inter,-apple-system,sans-serif" font-size="24" font-weight="700" letter-spacing="2">TRYTO<tspan fill="#00d4aa">ATTACK</tspan>ME</text>
+  <text x="120" y="156" fill="#8c919b" font-family="Inter,-apple-system,sans-serif" font-size="12" letter-spacing="1">defensive traffic observability</text>
 
-  <!-- title -->
-  <text x="104" y="210" fill="#edf4ff" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="56" font-weight="800" letter-spacing="2">DDoS POWER METER</text>
+  <!-- shield circle -->
+  <circle cx="600" cy="340" r="100" fill="none" stroke="rgba(255,255,255,.06)" stroke-width="1"/>
+  <circle cx="600" cy="340" r="65" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="1"/>
 
-  <!-- subtitle -->
-  <text x="108" y="260" fill="#8b97b8" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="20">Live traffic telemetry · rate-limit shield · request logs</text>
+  <!-- ring segments -->
+  <g transform="translate(600,340)">
+    <path d="M0,-80 A80,80 0 0,1 69.3,-40" fill="none" stroke="url(#ring)" stroke-width="30" stroke-linecap="round" filter="url(#glow)"/>
+    <path d="M69.3,40 A80,80 0 0,1 0,80" fill="none" stroke="url(#ring)" stroke-width="30" stroke-linecap="round" filter="url(#glow)"/>
+    <path d="M-69.3,40 A80,80 0 0,1 -69.3,-40" fill="none" stroke="url(#ring)" stroke-width="30" stroke-linecap="round" filter="url(#glow)"/>
+  </g>
 
-  <!-- power meter bar -->
-  <rect x="108" y="310" width="700" height="20" rx="10" fill="#080c20" stroke="#1f2a52" stroke-width="1"/>
-  <rect x="108" y="310" width="420" height="20" rx="10" fill="url(#meter)"/>
+  <!-- core glow -->
+  <circle cx="600" cy="340" r="30" fill="#00d4aa" fill-opacity=".3" filter="url(#glow)"/>
+  <circle cx="600" cy="340" r="12" fill="#00d4aa" fill-opacity=".7"/>
 
-  <!-- status -->
-  <text x="108" y="380" fill="#00ff88" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="22" font-weight="700">● MONITORING</text>
+  <!-- percentage -->
+  <text x="600" y="500" fill="#f5f5f2" font-family="SF Mono,ui-monospace,monospace" font-size="14" text-anchor="middle" letter-spacing="2">0% · NOMINAL TRAFFIC</text>
 
-  <!-- KPI boxes -->
-  <rect x="108" y="410" width="140" height="56" rx="10" fill="#0a0e24" stroke="#1f2a52"/>
-  <text x="118" y="432" fill="#8b97b8" font-family="monospace" font-size="9" letter-spacing="1">TOTAL REQ</text>
-  <text x="118" y="454" fill="#edf4ff" font-family="monospace" font-size="20" font-weight="800">1,247</text>
+  <!-- KPIs -->
+  <g font-family="SF Mono,ui-monospace,monospace" fill="#f5f5f2">
+    <text x="140" y="440" font-size="10" fill="#8c919b" letter-spacing="1">REQUESTS</text>
+    <text x="140" y="466" font-size="24" font-weight="600">12,481</text>
+    <text x="340" y="440" font-size="10" fill="#8c919b" letter-spacing="1">CURRENT RPS</text>
+    <text x="340" y="466" font-size="24" font-weight="600">184</text>
+    <text x="540" y="440" font-size="10" fill="#8c919b" letter-spacing="1">BLOCKED</text>
+    <text x="540" y="466" font-size="24" font-weight="600" fill="#e84855">2,913</text>
+    <text x="740" y="440" font-size="10" fill="#8c919b" letter-spacing="1">LATENCY P95</text>
+    <text x="740" y="466" font-size="24" font-weight="600">12ms</text>
+  </g>
 
-  <rect x="262" y="410" width="140" height="56" rx="10" fill="#0a0e24" stroke="#1f2a52"/>
-  <text x="272" y="432" fill="#8b97b8" font-family="monospace" font-size="9" letter-spacing="1">CURRENT RPS</text>
-  <text x="272" y="454" fill="#28d7ff" font-family="monospace" font-size="20" font-weight="800">42</text>
-
-  <rect x="416" y="410" width="140" height="56" rx="10" fill="#0a0e24" stroke="#1f2a52"/>
-  <text x="426" y="432" fill="#8b97b8" font-family="monospace" font-size="9" letter-spacing="1">BLOCKED</text>
-  <text x="426" y="454" fill="#ff2e4a" font-family="monospace" font-size="20" font-weight="800">389</text>
-
-  <rect x="570" y="410" width="140" height="56" rx="10" fill="#0a0e24" stroke="#1f2a52"/>
-  <text x="580" y="432" fill="#8b97b8" font-family="monospace" font-size="9" letter-spacing="1">LATENCY P95</text>
-  <text x="580" y="454" fill="#ffb700" font-family="monospace" font-size="20" font-weight="800">12ms</text>
-
-  <!-- waveform decoration -->
-  <path d="M60 530 C120 510 180 540 240 520 S360 490 420 510 S540 530 600 500 S720 480 780 510 S900 530 960 500 S1080 480 1140 510" fill="none" stroke="url(#line)" stroke-width="3" opacity=".6" filter="url(#glow)"/>
-
-  <!-- footer text -->
-  <text x="108" y="546" fill="#8b97b8" font-family="monospace" font-size="14">AUTHORIZED TESTING ONLY</text>
-  <text x="900" y="546" fill="#8b97b8" font-family="monospace" font-size="14" text-anchor="end">trytoattackme.vercel.app</text>
+  <!-- footer -->
+  <text x="600" y="606" fill="#5f646d" font-family="Inter,-apple-system,sans-serif" font-size="11" text-anchor="middle" letter-spacing="1">trytoattackme.vercel.app</text>
 </svg>
