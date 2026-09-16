@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TRYTOATTACKME — DDoS Power Meter</title>
+<style>
+:root{--bg:#070a14;--card:#11162e;--line:#1c2347;--neon:#00ff88;--red:#ff2e4a;--amber:#ffb700;--muted:#8b8fa8;--text:#e8e9f0}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:ui-monospace,Menlo,monospace;background:var(--bg);color:var(--text)}
+a{color:var(--neon)}
+header{position:sticky;top:0;z-index:20;background:rgba(7,10,20,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.hd{max-width:1400px;margin:0 auto;padding:12px 18px;display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.brand{font-weight:900;letter-spacing:.1em;font-size:15px}
+.brand b{color:var(--neon)}
+.pills{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.pill{border:1px solid var(--line);background:var(--card);padding:6px 10px;border-radius:999px;font-size:11px}
+.pill.live{border-color:var(--red);color:var(--red);animation:blink 1s infinite}
+@keyframes blink{50%{opacity:.6}}
+.wrap{max-width:1400px;margin:0 auto;padding:16px 18px 40px}
+.hero{display:grid;grid-template-columns:1.15fr .85fr;gap:12px}
+@media(max-width:980px){.hero{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px}
+.label{font-size:10px;letter-spacing:.14em;color:var(--muted);text-transform:uppercase}
+.big{font-size:32px;font-weight:900;line-height:1}
+.big small{font-size:12px;color:var(--muted);font-weight:400}
+.meter{height:14px;background:#0a0e24;border:1px solid var(--line);border-radius:999px;overflow:hidden;margin-top:10px;position:relative}
+.meter>i{display:block;height:100%;width:0%;background:linear-gradient(90deg,var(--neon),var(--amber) 55%,var(--red));transition:width .4s}
+.meter>span{position:absolute;inset:0;display:grid;place-items:center;font-size:10px;font-weight:800;letter-spacing:.08em}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:12px}
+@media(max-width:900px){.kpis{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:520px){.kpis{grid-template-columns:1fr}}
+.kpi .v{font-size:26px;font-weight:800}
+.mini{font-size:11px;color:var(--muted)}
+.grid2{display:grid;grid-template-columns:1.55fr .9fr;gap:12px;margin-top:12px}
+@media(max-width:980px){.grid2{grid-template-columns:1fr}}
+.chart{height:320px}
+canvas{width:100%;height:100%;display:block}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.btn{border:1px solid var(--line);background:var(--card);color:var(--text);padding:8px 11px;border-radius:10px;font:inherit;font-size:12px;cursor:pointer}
+.btn:hover{border-color:#2a3570}
+.btn.on{border-color:var(--neon);color:var(--neon)}
+.btn.bad{border-color:var(--red);color:var(--red)}
+input[type=number]{width:86px;background:#080c22;border:1px solid var(--line);color:var(--text);padding:6px 8px;border-radius:10px;font:inherit}
+.table-wrap{margin-top:12px;background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.th{padding:12px 14px;display:flex;justify-content:space-between;gap:10px;align-items:center;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.tabs{display:flex;gap:6px}
+.tab{padding:6px 10px;border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--muted);font-size:11px;cursor:pointer}
+.tab.active{background:#0e1430;color:var(--text);border-color:#2a3570}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{color:var(--muted);font-weight:700;text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);font-size:10px;letter-spacing:.08em;text-transform:uppercase}
+td{padding:9px 12px;border-bottom:1px solid #151b3a;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+tr.bad{background:rgba(255,46,74,.07)}
+.badge{padding:3px 8px;border-radius:999px;font-size:10px;font-weight:800;border:1px solid}
+.badge.ok{color:var(--neon);border-color:rgba(0,255,136,.35);background:rgba(0,255,136,.12)}
+.badge.no{color:var(--red);border-color:rgba(255,46,74,.4);background:rgba(255,46,74,.14)}
+.cols{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:12px}
+@media(max-width:980px){.cols{grid-template-columns:1fr}}
+.list{font-size:12px}
+.item{display:flex;justify-content:space-between;gap:8px;padding:7px 0;border-bottom:1px solid #151b3a}
+.item:last-child{border:0}
+.bar{height:6px;background:#0a0e24;border:1px solid var(--line);border-radius:999px;overflow:hidden;margin-top:4px}
+.bar>i{display:block;height:100%;background:var(--neon);width:0%}
+code{background:#0a0e24;border:1px solid var(--line);padding:2px 6px;border-radius:6px}
+</style>
+</head>
+<body>
+<header>
+  <div class="hd">
+    <div class="brand">TRYTO<b>ATTACK</b>ME <span style="font-weight:400;color:var(--muted);letter-spacing:.04em">— DDoS POWER METER</span></div>
+    <div class="pills">
+      <span class="pill" id="uptime">up 0s</span>
+      <span class="pill" id="peak">peak 0 rps</span>
+      <span class="pill live" id="state">● MONITORING</span>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="hero">
+    <div class="card">
+      <div class="label">Attack Power</div>
+      <div class="big" id="power">0% <small id="level">CALM</small></div>
+      <div class="meter"><i id="powerBar"></i><span id="powerText">0% — shield holding</span></div>
+      <div class="mini" style="margin-top:8px">Power = RPS + unique IP + block rate. 100% = nuke. Diukur live dari semua hit ke <code>/api/hit</code>.</div>
+      <div style="display:flex;gap:12px;margin-top:12px;flex-wrap:wrap">
+        <span class="mini">endpoint uji: <code>/api/hit</code> (GET/POST apapun)</span>
+        <span class="mini">curl: <code id="curl">curl https://TRYTOATTACKME.vercel.app/api/hit</code></span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="label">Shield</div>
+      <div style="display:flex;gap:10px;align-items:center;margin-top:6px;flex-wrap:wrap">
+        <span class="big" id="shield">ON</span>
+        <span class="mini" id="shieldMeta">25 rps / burst 50 per IP — auto-ban 8 violations</span>
+      </div>
+      <div class="row" style="margin-top:12px">
+        <label class="pill" style="display:flex;gap:8px;align-items:center">RPS <input id="rps" type="number" min="1" max="1000" value="25"></label>
+        <label class="pill" style="display:flex;gap:8px;align-items:center">Burst <input id="burst" type="number" min="1" max="2000" value="50"></label>
+        <button class="btn" onclick="saveCfg()">Save</button>
+        <button class="btn" onclick="toggleShield()" id="togBtn">Disable shield</button>
+        <button class="btn bad" onclick="clearAll()">Clear logs</button>
+      </div>
+      <div class="mini" style="margin-top:8px">Semua kontrol public — sengaja, biar tester bisa ukur dengan/without shield.</div>
+    </div>
+  </div>
+
+  <div class="kpis">
+    <div class="card kpi"><div class="label">Total Requests</div><div class="v" id="total">0</div><div class="mini"><span id="unique">0</span> unique IP • blocked <span id="blocked">0</span> (<span id="brate">0%</span>)</div></div>
+    <div class="card kpi"><div class="label">Current RPS</div><div class="v" id="curRps">0</div><div class="mini">avg 10s <span id="rps10">0</span> • 60s <span id="rps60">0</span></div></div>
+    <div class="card kpi"><div class="label">Blocked / sec</div><div class="v" id="curBlocked" style="color:var(--red)">0</div><div class="mini">last 10s <span id="b10">0</span> • 60s <span id="b60">0</span></div></div>
+    <div class="card kpi"><div class="label">Latency</div><div class="v" id="latAvg">0<small> ms avg</small></div><div class="mini">p50 <span id="p50">0</span> • p95 <span id="p95">0</span> • p99 <span id="p99">0</span></div></div>
+  </div>
+
+  <div class="grid2">
+    <div class="card chart"><canvas id="chart"></canvas></div>
+    <div class="card" style="height:320px;overflow:auto">
+      <div class="label">Top Attackers</div>
+      <div id="topIps" class="list" style="margin-top:8px"></div>
+    </div>
+  </div>
+
+  <div class="cols">
+    <div class="card"><div class="label">Top Paths</div><div id="topPaths" class="list"></div></div>
+    <div class="card"><div class="label">Top Countries</div><div id="topCountries" class="list"></div></div>
+    <div class="card"><div class="label">Methods & Status</div><div id="mix" class="list"></div></div>
+  </div>
+
+  <div class="card" style="margin-top:12px">
+    <div class="label">User-Agents</div>
+    <div id="uas" class="list"></div>
+  </div>
+
+  <div class="table-wrap">
+    <div class="th">
+      <div style="display:flex;gap:10px;align-items:center"><b style="font-size:13px">LIVE REQUESTS</b> <span class="mini" id="rowCount">0 rows</span></div>
+      <div class="tabs">
+        <button class="tab active" data-f="all" onclick="setFilter('all')">All</button>
+        <button class="tab" data-f="blocked" onclick="setFilter('blocked')">Blocked</button>
+        <button class="tab" data-f="allowed" onclick="setFilter('allowed')">Allowed</button>
+      </div>
+    </div>
+    <div style="overflow:auto;max-height:560px">
+      <table>
+        <thead><tr><th>Time</th><th>IP</th><th>Country</th><th>Method</th><th>Path</th><th>Status</th><th>Latency</th><th>UA</th></tr></thead>
+        <tbody id="tbody"><tr><td colspan="8" style="text-align:center;color:var(--muted);padding:18px">no hits yet — attack <code>/api/hit</code></td></tr></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="mini" style="margin-top:10px">Tip uji DDoS: <code>ab -n 10000 -c 100 https://DOMAIN/api/hit</code> atau <code>wrk -t8 -c200 -d30s https://DOMAIN/api/hit</code> — semua tercatat. Vercel limit execution 10s, rate shield di atas itu tambahan pengukuran.</div>
+</div>
+
+<script>
+let filter='all';
+const escapeHtml = (value = '') => String(value)
+  .replace(/&/g, '&amp;')
+  .replace(/</g, '&lt;')
+  .replace(/>/g, '&gt;')
+  .replace(/"/g, '&quot;')
+  .replace(/'/g, '&#39;');
+const cv=document.getElementById('chart'),cx=cv.getContext('2d');
+let hist=[];
+function resize(){cv.width=cv.offsetWidth*2;cv.height=cv.offsetHeight*2;cx.setTransform(2,0,0,2,0,0)}
+function draw(){
+ const w=cv.offsetWidth,h=cv.offsetHeight,p=30;
+ cx.clearRect(0,0,w,h); cx.fillStyle='#11162e'; cx.fillRect(0,0,w,h);
+ cx.strokeStyle='#1c2347'; cx.lineWidth=1;
+ for(let i=0;i<=4;i++){const y=p+(h-p*2)*(i/4); cx.beginPath(); cx.moveTo(p,y); cx.lineTo(w-p,y); cx.stroke()}
+ if(hist.length<2) return;
+ const max=Math.max(...hist.map(x=>x.rps), 10);
+ const step=(w-p*2)/119;
+ // blocked area
+ cx.fillStyle='rgba(255,46,74,.18)'; cx.beginPath();
+ hist.forEach((pt,i)=>{const x=p+step*(120-hist.length+i), y=h-p-(h-p*2)*(pt.blocked/max); i?cx.lineTo(x,y):cx.moveTo(x,y)});
+ cx.lineTo(p+step*119,h-p); cx.lineTo(p+step*(120-hist.length),h-p); cx.closePath(); cx.fill();
+ // rps line
+ cx.strokeStyle='#00ff88'; cx.lineWidth=1.7; cx.beginPath();
+ hist.forEach((pt,i)=>{const x=p+step*(120-hist.length+i), y=h-p-(h-p*2)*(pt.rps/max); i?cx.lineTo(x,y):cx.moveTo(x,y)});
+ cx.stroke();
+ cx.fillStyle='#8b8fa8'; cx.font='10px monospace'; cx.fillText(max+' rps', p, p-6);
+ cx.fillStyle='rgba(255,46,74,.9)'; cx.fillRect(p, h-p+8, 10, 6); cx.fillStyle='#8b8fa8'; cx.fillText('blocked', p+14, h-p+13);
+}
+addEventListener('resize',()=>{resize();draw()}); resize();
+
+function setFilter(f){filter=f;document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.f===f));loadLogs()}
+async function loadStats(){
+ const r=await fetch('/api/stats',{cache:'no-store'}); const s=await r.json();
+ document.getElementById('total').textContent=s.total;
+ document.getElementById('blocked').textContent=s.blocked;
+ document.getElementById('brate').textContent=s.total?Math.round(s.blocked/s.total*100)+'%':'0%';
+ document.getElementById('unique').textContent=s.unique;
+ document.getElementById('curRps').textContent=s.curRps;
+ document.getElementById('curBlocked').textContent=s.curBlocked;
+ document.getElementById('rps10').textContent=s.rps10;
+ document.getElementById('rps60').textContent=s.rps60;
+ document.getElementById('b10').textContent=s.blocked10;
+ document.getElementById('b60').textContent=s.blocked60;
+ document.getElementById('latAvg').innerHTML=s.latency.avg+'<small> ms avg</small>';
+ document.getElementById('p50').textContent=s.latency.p50; document.getElementById('p95').textContent=s.latency.p95; document.getElementById('p99').textContent=s.latency.p99;
+ document.getElementById('power').innerHTML=s.power+'% <small>'+s.level+'</small>';
+ document.getElementById('powerBar').style.width=s.power+'%';
+ document.getElementById('powerText').textContent=s.power+'% — '+ (s.underAttack ? 'UNDER ATTACK' : 'shield holding');
+ document.getElementById('uptime').textContent='up '+Math.floor(s.uptime/1000)+'s';
+ document.getElementById('peak').textContent='peak '+s.peak+' rps';
+ const st=document.getElementById('state');
+ st.textContent=s.underAttack ? '⚠ UNDER ATTACK' : '● MONITORING';
+ st.style.borderColor=s.underAttack?'var(--red)':'var(--line)'; st.style.color=s.underAttack?'var(--red)':'var(--muted)';
+ document.getElementById('shield').textContent=s.config.protection?'ON':'OFF';
+ document.getElementById('shield').style.color=s.config.protection?'var(--neon)':'var(--red)';
+ document.getElementById('shieldMeta').textContent=s.config.rps+' rps / burst '+s.config.burst+' per IP — auto-ban 8 violations';
+ document.getElementById('rps').value=s.config.rps; document.getElementById('burst').value=s.config.burst;
+ document.getElementById('togBtn').textContent=s.config.protection?'Disable shield':'Enable shield';
+ hist=s.history; draw();
+ // top ips
+ const tip=document.getElementById('topIps');
+ tip.innerHTML=s.topIps.length? s.topIps.map(t=>{
+   const ip = escapeHtml(t.ip);
+   const rawIp = String(t.ip ?? '');
+   const city = escapeHtml(t.city);
+   const country = escapeHtml(t.country);
+   const topPath = escapeHtml(t.topPath);
+   return `
+  <div class="item"><div><b>${ip}</b> <span class="mini">${city !== '-' ? city + ', ' : ''}${country}</span> ${t.banned?'<span class="badge no" style="padding:1px 6px">BANNED</span>':''}<div class="mini">${t.hits} hits • blocked ${t.blocked} • ${topPath}</div></div><button class="btn" style="padding:4px 8px;font-size:11px" onclick="blockIp(${JSON.stringify(rawIp)},${t.banned})">${t.banned?'Unblock':'Block'}</button></div>
+ `; }).join('') : '<span class="mini">no data — hit /api/hit</span>';
+ document.getElementById('topPaths').innerHTML=s.topPaths.map(([p,c])=>`<div class="item"><span><code>${escapeHtml(p)}</code></span><b>${c}</b></div>`).join('')||'<span class="mini">-</span>';
+ document.getElementById('topCountries').innerHTML=s.topCountries.map(([cc,c])=>`<div class="item"><span>${escapeHtml(cc)}</span><b>${c}</b></div>`).join('')||'<span class="mini">-</span>';
+ const maxM=Math.max(...s.byMethod.map(([,c])=>c),1), maxS=Math.max(...s.byStatus.map(([,c])=>c),1);
+ document.getElementById('mix').innerHTML=
+  '<div class="mini" style="margin-bottom:6px">methods</div>'+s.byMethod.map(([m,c])=>`<div class="mini">${escapeHtml(m)} ${c}</div><div class="bar"><i style="width:${c/maxM*100}%"></i></div>`).join('')+
+  '<div class="mini" style="margin:8px 0 6px">status</div>'+s.byStatus.map(([sc,c])=>`<div class="mini">${escapeHtml(sc)} ${c}</div><div class="bar"><i style="width:${c/maxS*100}%;background:${String(sc).startsWith('2')?'var(--neon)':'var(--red)'}"></i></div>`).join('');
+ document.getElementById('uas').innerHTML=s.topUas.map(([ua,c])=>`<div class="item"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:78%">${escapeHtml(ua)}</span><b>${c}</b></div>`).join('')||'<span class="mini">-</span>';
+ document.getElementById('curl').textContent='curl '+location.origin+'/api/hit';
+}
+async function loadLogs(){
+ const r=await fetch('/api/logs?filter='+filter+'&limit=150',{cache:'no-store'}); const d=await r.json();
+ document.getElementById('rowCount').textContent=d.logs.length+' rows';
+ const tb=document.getElementById('tbody');
+ if(!d.logs.length){tb.innerHTML='<tr><td colspan="8" style="text-align:center;color:var(--muted);padding:18px">no logs for filter</td></tr>';return}
+ tb.innerHTML=d.logs.map(x=>{
+   const t=new Date(x.ts).toLocaleTimeString();
+   const badge=x.blocked?'<span class="badge no">429 BLOCKED</span>':'<span class="badge ok">200 OK</span>';
+   const ip = escapeHtml(x.ip || 'unknown');
+   const country = escapeHtml(x.country || '-');
+   const method = escapeHtml(x.method || 'GET');
+   const path = escapeHtml(x.path || '/');
+   const reason = escapeHtml(x.reason || '');
+   const ua = escapeHtml(x.ua || '-');
+   return `<tr class="${x.blocked?'bad':''}"><td>${escapeHtml(t)}</td><td>${ip}</td><td>${country}</td><td>${method}</td><td>${path}</td><td>${badge}${x.blocked?'<div class="mini">'+reason+'</div>':''}</td><td>${x.latency}ms</td><td title="${ua}">${ua.slice(0,42)}</td></tr>`;
+ }).join('');
+}
+async function saveCfg(){
+ const rps=parseInt(document.getElementById('rps').value), burst=parseInt(document.getElementById('burst').value);
+ await fetch('/api/config',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({rps,burst})}); loadStats();
+}
+async function toggleShield(){
+ const cur=document.getElementById('shield').textContent==='ON';
+ await fetch('/api/config',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({protection:!cur})}); loadStats();
+}
+async function clearAll(){ await fetch('/api/config',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'clear'})}); loadStats(); loadLogs(); }
+async function blockIp(ip,banned){ await fetch('/api/config',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:banned?'unblock':'block',ip})}); loadStats(); loadLogs(); }
+setInterval(()=>{loadStats();loadLogs()},1000);
+loadStats();loadLogs();
+</script>
+</body>
+</html>
