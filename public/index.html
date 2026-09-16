@@ -5,103 +5,125 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#070a14">
 <meta name="color-scheme" content="dark">
-<meta name="description" content="Dashboard live untuk ukur traffic, lihat request diblokir, dan pantau ketahanan endpoint.">
+<meta name="description" content="Dashboard live untuk ukur traffic, lihat request diblokir, dan pantau ketahanan endpoint. Real-time RPS, latency, dan attacker tracking.">
 <meta name="author" content="TRYTOATTACKME">
+<meta name="keywords" content="DDoS, rate limit, traffic monitor, security dashboard, API observability, RPS meter">
 <link rel="canonical" href="https://trytoattackme.vercel.app/">
 <link rel="icon" type="image/svg+xml" href="/preview.svg">
+
+<!-- Open Graph / WhatsApp / Telegram / Facebook -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="TRYTOATTACKME">
 <meta property="og:title" content="TRYTOATTACKME — Live DDoS Power Meter">
-<meta property="og:description" content="Pantau request, RPS, IP unik, latency, dan traffic yang diblokir secara live.">
+<meta property="og:description" content="Pantau request, RPS, IP unik, latency, dan traffic yang diblokir secara live. Uji ketahanan endpoint dengan rate-limit shield.">
 <meta property="og:url" content="https://trytoattackme.vercel.app/">
-<meta property="og:image" content="https://trytoattackme.vercel.app/preview.svg">
+<meta property="og:image" content="https://trytoattackme.vercel.app/preview.png">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="id_ID">
+
+<!-- Twitter -->
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@trytoattackme">
 <meta name="twitter:title" content="TRYTOATTACKME — Live DDoS Power Meter">
-<meta name="twitter:description" content="Live dashboard untuk ukur traffic dan efektivitas rate-limit.">
-<meta name="twitter:image" content="https://trytoattackme.vercel.app/preview.svg">
+<meta name="twitter:description" content="Pantau request, RPS, IP unik, latency, dan traffic yang diblokir secara live.">
+<meta name="twitter:image" content="https://trytoattackme.vercel.app/preview.png">
+<meta name="twitter:image:alt" content="TRYTOATTACKME dashboard showing live traffic metrics">
+
+<!-- Telegram instant view -->
+<meta name="telegram:channel" content="@trytoattackme">
+
 <title>TRYTOATTACKME — Live DDoS Power Meter</title>
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"TRYTOATTACKME","url":"https://trytoattackme.vercel.app/","description":"Live dashboard untuk monitor request, traffic, latency, dan rate-limit protection.","applicationCategory":"SecurityApplication","operatingSystem":"Web"}</script>
+
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"TRYTOATTACKME","url":"https://trytoattackme.vercel.app/","description":"Live dashboard untuk monitor request, traffic, latency, dan rate-limit protection.","applicationCategory":"SecurityApplication","operatingSystem":"Web","author":{"@type":"Organization","name":"TRYTOATTACKME"},"image":"https://trytoattackme.vercel.app/preview.png"}</script>
+
 <style>
-  :root{
-    --bg:#070a14; --bg2:#0b1022; --card:#121839; --card2:#151c3b;
-    --line:#1f2a52; --line2:#24315e; --text:#edf4ff; --muted:#8b97b8;
-    --neon:#00ff88; --cyan:#28d7ff; --red:#ff2e4a; --amber:#ffb700;
-    --r:16px; --r2:18px; --shadow:0 18px 60px rgba(0,0,0,.28);
-  }
-  *{margin:0;padding:0;box-sizing:border-box}
-  html{background:var(--bg);scrollbar-color:var(--line2) transparent}
-  body{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;background:linear-gradient(180deg,var(--bg),var(--bg2));color:var(--text);min-height:100vh;line-height:1.5}
-  a{color:var(--neon);text-underline-offset:3px}
-  a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
-  .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}
+:root{
+  --bg:#070a14; --bg2:#0b1022; --card:#121839; --card2:#151c3b;
+  --line:#1f2a52; --line2:#24315e; --text:#edf4ff; --muted:#8b97b8;
+  --neon:#00ff88; --cyan:#28d7ff; --red:#ff2e4a; --amber:#ffb700;
+  --r:16px; --r2:18px; --shadow:0 18px 60px rgba(0,0,0,.28);
+}
+* { margin:0; padding:0; box-sizing:border-box }
+html { background:var(--bg); scrollbar-color:var(--line2) transparent }
+body { font-family:ui-monospace,SFMono-Regular,Menlo,monospace; background:linear-gradient(180deg,var(--bg),var(--bg2)); color:var(--text); min-height:100vh; line-height:1.5 }
+a { color:var(--neon); text-underline-offset:3px }
+a:focus-visible, button:focus-visible, input:focus-visible { outline:2px solid var(--cyan); outline-offset:2px }
+.sr-only { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap }
 
-  header{position:sticky;top:0;z-index:20;background:rgba(7,10,20,.82);backdrop-filter:blur(16px);border-bottom:1px solid rgba(64,86,150,.28)}
-  .hd{max-width:1400px;margin:0 auto;padding:14px 18px;display:flex;gap:16px;align-items:center;justify-content:space-between;flex-wrap:wrap}
-  .brand{font-weight:800;letter-spacing:.1em;font-size:14px;display:flex;align-items:center;gap:8px}
-  .brand::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--neon);box-shadow:0 0 14px var(--neon)}
-  .brand b{color:var(--neon)}
-  .brand small{font-weight:400;color:var(--muted);letter-spacing:.03em}
-  .pills{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-  .pill{border:1px solid var(--line);background:rgba(17,22,46,.7);padding:6px 10px;border-radius:999px;font-size:11px}
-  .pill.live{border-color:rgba(255,46,74,.5);color:var(--red)}
+header { position:sticky; top:0; z-index:20; background:rgba(7,10,20,.82); backdrop-filter:blur(16px); border-bottom:1px solid rgba(64,86,150,.28) }
+.hd { max-width:1400px; margin:0 auto; padding:14px 18px; display:flex; gap:16px; align-items:center; justify-content:space-between; flex-wrap:wrap }
+.brand { font-weight:800; letter-spacing:.1em; font-size:14px; display:flex; align-items:center; gap:8px }
+.brand::before { content:""; width:8px; height:8px; border-radius:50%; background:var(--neon); box-shadow:0 0 14px var(--neon) }
+.brand b { color:var(--neon) }
+.brand small { font-weight:400; color:var(--muted); letter-spacing:.03em }
+.pills { display:flex; gap:8px; flex-wrap:wrap; align-items:center }
+.pill { border:1px solid var(--line); background:rgba(17,22,46,.7); padding:6px 10px; border-radius:999px; font-size:11px }
+.pill.live { border-color:rgba(255,46,74,.5); color:var(--red) }
 
-  .wrap{max-width:1400px;margin:0 auto;padding:24px 18px 40px}
-  .eyebrow{color:var(--cyan);font-size:10px;letter-spacing:.16em;margin-bottom:14px}
-  .card{background:linear-gradient(180deg,rgba(21,28,59,.92),rgba(12,17,39,.9));border:1px solid var(--line);border-radius:var(--r2);padding:16px;box-shadow:var(--shadow);position:relative}
-  .label{font-size:10px;letter-spacing:.12em;color:var(--muted);text-transform:uppercase}
-  .big{font-size:32px;font-weight:800;line-height:1;letter-spacing:-.03em}
-  .big small{font-size:12px;color:var(--muted);font-weight:400}
+.wrap { max-width:1400px; margin:0 auto; padding:24px 18px 40px }
+.eyebrow { color:var(--cyan); font-size:10px; letter-spacing:.16em; margin-bottom:14px }
+.card { background:linear-gradient(180deg,rgba(21,28,59,.92),rgba(12,17,39,.9)); border:1px solid var(--line); border-radius:var(--r2); padding:16px; box-shadow:var(--shadow); position:relative }
+.label { font-size:10px; letter-spacing:.12em; color:var(--muted); text-transform:uppercase }
+.big { font-size:32px; font-weight:800; line-height:1; letter-spacing:-.03em }
+.big small { font-size:12px; color:var(--muted); font-weight:400 }
 
-  .hero{display:grid;grid-template-columns:1.2fr .8fr;gap:12px}
-  .meter{height:14px;background:#080c20;border:1px solid var(--line);border-radius:999px;overflow:hidden;margin-top:12px;position:relative}
-  .meter>i{display:block;height:100%;width:0%;background:linear-gradient(90deg,var(--neon),var(--amber) 55%,var(--red));transition:width .35s}
-  .meter>span{position:absolute;inset:0;display:grid;place-items:center;font-size:10px;font-weight:700;letter-spacing:.06em}
+.hero { display:grid; grid-template-columns:1.2fr .8fr; gap:12px }
+.meter { height:14px; background:#080c20; border:1px solid var(--line); border-radius:999px; overflow:hidden; margin-top:12px; position:relative }
+.meter>i { display:block; height:100%; width:0%; background:linear-gradient(90deg,var(--neon),var(--amber) 55%,var(--red)); transition:width .35s }
+.meter>span { position:absolute; inset:0; display:grid; place-items:center; font-size:10px; font-weight:700; letter-spacing:.06em }
 
-  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:12px}
-  .kpi .v{font-size:26px;font-weight:800}
-  .mini{font-size:11px;color:var(--muted)}
-  .kpi{border-top:2px solid var(--line)}
-  .kpi:nth-child(1){border-top-color:var(--neon)} .kpi:nth-child(2){border-top-color:var(--cyan)} .kpi:nth-child(3){border-top-color:var(--red)} .kpi:nth-child(4){border-top-color:var(--amber)}
+.kpis { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-top:12px }
+.kpi .v { font-size:26px; font-weight:800 }
+.mini { font-size:11px; color:var(--muted) }
+.kpi { border-top:2px solid var(--line) }
+.kpi:nth-child(1) { border-top-color:var(--neon) } .kpi:nth-child(2) { border-top-color:var(--cyan) } .kpi:nth-child(3) { border-top-color:var(--red) } .kpi:nth-child(4) { border-top-color:var(--amber) }
 
-  .grid2{display:grid;grid-template-columns:1.6fr .9fr;gap:12px;margin-top:12px}
-  .chart{height:320px}
-  canvas{width:100%;height:100%;display:block}
-  .list{font-size:12px}
-  .item{display:flex;justify-content:space-between;gap:8px;padding:7px 0;border-bottom:1px solid #151b3a}
-  .item:last-child{border:0}
+.grid2 { display:grid; grid-template-columns:1.6fr .9fr; gap:12px; margin-top:12px }
+.chart { height:320px }
+canvas { width:100%; height:100%; display:block }
+.list { font-size:12px }
+.item { display:flex; justify-content:space-between; gap:8px; padding:7px 0; border-bottom:1px solid #151b3a }
+.item:last-child { border:0 }
 
-  .row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
-  .btn{border:1px solid var(--line);background:rgba(9,14,34,.9);color:var(--text);padding:8px 12px;border-radius:10px;font:inherit;font-size:12px;cursor:pointer;min-height:36px}
-  .btn:hover{border-color:var(--line2);background:var(--card2)}
-  .btn:disabled{opacity:.5;cursor:not-allowed}
-  .btn.on{border-color:var(--neon);color:var(--neon)}
-  .btn.bad{border-color:rgba(255,46,74,.45);color:var(--red)}
-  input[type=number]{width:82px;background:#080c22;border:1px solid var(--line);color:var(--text);padding:6px 8px;border-radius:10px;font:inherit}
+.row { display:flex; gap:8px; flex-wrap:wrap; margin-top:12px }
+.btn { border:1px solid var(--line); background:rgba(9,14,34,.9); color:var(--text); padding:8px 12px; border-radius:10px; font:inherit; font-size:12px; cursor:pointer; min-height:36px }
+.btn:hover { border-color:var(--line2); background:var(--card2) }
+.btn:disabled { opacity:.5; cursor:not-allowed }
+.btn.on { border-color:var(--neon); color:var(--neon) }
+.btn.bad { border-color:rgba(255,46,74,.45); color:var(--red) }
+input[type=number] { width:82px; background:#080c22; border:1px solid var(--line); color:var(--text); padding:6px 8px; border-radius:10px; font:inherit }
 
-  .table-wrap{margin-top:12px;background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden}
-  .th{padding:12px 14px;display:flex;justify-content:space-between;gap:10px;align-items:center;border-bottom:1px solid var(--line);flex-wrap:wrap}
-  .tabs{display:flex;gap:6px}
-  .tab{padding:6px 10px;border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--muted);font-size:11px;cursor:pointer;min-height:32px}
-  .tab[aria-selected="true"]{background:#0e1430;color:var(--text);border-color:var(--line2)}
-  table{width:100%;border-collapse:collapse;font-size:12px}
-  th{color:var(--muted);font-weight:700;text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);font-size:10px;letter-spacing:.07em;text-transform:uppercase}
-  td{padding:9px 12px;border-bottom:1px solid #151b3a;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  tr.bad{background:rgba(255,46,74,.06)}
-  .badge{padding:3px 8px;border-radius:999px;font-size:10px;font-weight:800;border:1px solid}
-  .badge.ok{color:var(--neon);border-color:rgba(0,255,136,.3);background:rgba(0,255,136,.1)}
-  .badge.no{color:var(--red);border-color:rgba(255,46,74,.35);background:rgba(255,46,74,.12)}
-  .cols{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:12px}
-  .bar{height:6px;background:#0a0e24;border:1px solid var(--line);border-radius:999px;overflow:hidden;margin-top:4px}
-  .bar>i{display:block;height:100%;background:var(--neon);width:0%}
-  code{background:#080c20;border:1px solid var(--line);padding:2px 6px;border-radius:6px;color:var(--cyan);font-size:11px}
-  .section-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:22px 0 10px}
-  .section-head h2{font-size:12px;letter-spacing:.1em;text-transform:uppercase}
-  .footer{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;border-top:1px solid var(--line);margin-top:24px;padding-top:14px}
+.table-wrap { margin-top:12px; background:var(--card); border:1px solid var(--line); border-radius:16px; overflow:hidden }
+.th { padding:12px 14px; display:flex; justify-content:space-between; gap:10px; align-items:center; border-bottom:1px solid var(--line); flex-wrap:wrap }
+.tabs { display:flex; gap:6px }
+.tab { padding:6px 10px; border-radius:999px; border:1px solid var(--line); background:transparent; color:var(--muted); font-size:11px; cursor:pointer; min-height:32px }
+.tab[aria-selected="true"] { background:#0e1430; color:var(--text); border-color:var(--line2) }
+table { width:100%; border-collapse:collapse; font-size:12px }
+th { color:var(--muted); font-weight:700; text-align:left; padding:10px 12px; border-bottom:1px solid var(--line); font-size:10px; letter-spacing:.07em; text-transform:uppercase }
+td { padding:9px 12px; border-bottom:1px solid #151b3a; max-width:220px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap }
+tr.bad { background:rgba(255,46,74,.06) }
+.badge { padding:3px 8px; border-radius:999px; font-size:10px; font-weight:800; border:1px solid }
+.badge.ok { color:var(--neon); border-color:rgba(0,255,136,.3); background:rgba(0,255,136,.1) }
+.badge.no { color:var(--red); border-color:rgba(255,46,74,.35); background:rgba(255,46,74,.12) }
+.cols { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:12px }
+.bar { height:6px; background:#0a0e24; border:1px solid var(--line); border-radius:999px; overflow:hidden; margin-top:4px }
+.bar>i { display:block; height:100%; background:var(--neon); width:0% }
+code { background:#080c20; border:1px solid var(--line); padding:2px 6px; border-radius:6px; color:var(--cyan); font-size:11px }
+.section-head { display:flex; align-items:center; justify-content:space-between; gap:12px; margin:22px 0 10px }
+.section-head h2 { font-size:12px; letter-spacing:.1em; text-transform:uppercase }
+.footer { display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; border-top:1px solid var(--line); margin-top:24px; padding-top:14px }
 
-  @media(max-width:980px){.hero,.grid2,.cols{grid-template-columns:1fr}}
-  @media(max-width:900px){.kpis{grid-template-columns:repeat(2,1fr)}}
-  @media(max-width:520px){.kpis{grid-template-columns:1fr} .wrap,.hd{padding-left:12px;padding-right:12px} .brand{font-size:12px} .brand small{display:none}}
-  @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+/* Attack pulse animation */
+@keyframes pulse-red { 0%,100% { box-shadow:0 0 0 0 rgba(255,46,74,.4) } 50% { box-shadow:0 0 20px 4px rgba(255,46,74,.2) } }
+.attack-mode .card { animation:pulse-red 2s infinite }
+.attack-mode header { border-bottom-color:rgba(255,46,74,.5) }
+
+@media(max-width:980px){ .hero,.grid2,.cols { grid-template-columns:1fr } }
+@media(max-width:900px){ .kpis { grid-template-columns:repeat(2,1fr) } }
+@media(max-width:520px){ .kpis { grid-template-columns:1fr } .wrap,.hd { padding-left:12px; padding-right:12px } .brand { font-size:12px } .brand small { display:none } }
+@media(prefers-reduced-motion:reduce){ * { transition:none!important; animation:none!important } }
 </style>
 </head>
 <body>
@@ -116,7 +138,7 @@
   </div>
 </header>
 
-<main class="wrap">
+<main class="wrap" id="main">
   <p class="eyebrow">LIVE TELEMETRY · AUTHORIZED TESTING ONLY</p>
 
   <section class="hero" aria-label="Power and shield">
@@ -195,7 +217,7 @@
   <p class="mini" style="margin-top:10px">Uji terotorisasi: <code>ab -n 10000 -c 100 https://DOMAIN/api/hit</code></p>
 
   <footer class="footer">
-    <span class="mini">TRYTOATTACKME · defensive traffic observability</span>
+    <span class="mini">TRYTOATTACKME · defensive traffic observability · live update setiap request</span>
     <span class="mini"><a href="/api/stats">stats</a> · <a href="/api/hit">test endpoint</a></span>
   </footer>
 </main>
@@ -204,6 +226,7 @@
 const POLL_MS = 1000;
 const LOG_LIMIT = 150;
 let filter = "all";
+let isAttackMode = false;
 
 const $ = (id) => document.getElementById(id);
 const esc = (v = "") => String(v).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;");
@@ -251,6 +274,12 @@ function setFilter(f){
   loadLogs();
 }
 
+function setAttackMode(active){
+  if(active === isAttackMode) return;
+  isAttackMode = active;
+  document.body.classList.toggle("attack-mode", active);
+}
+
 async function loadStats(){
   const res = await fetch("/api/stats",{cache:"no-store"});
   if(!res.ok) return;
@@ -279,6 +308,8 @@ async function loadStats(){
   st.textContent = s.underAttack ? "UNDER ATTACK" : "MONITORING";
   st.style.color = s.underAttack ? "var(--red)" : "var(--muted)";
   st.style.borderColor = s.underAttack ? "rgba(255,46,74,.5)" : "var(--line)";
+
+  setAttackMode(s.underAttack);
 
   $("shield").textContent = s.config.protection ? "ON" : "OFF";
   $("shield").style.color = s.config.protection ? "var(--neon)" : "var(--red)";
