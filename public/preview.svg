@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#070a14"/>
+      <stop offset="1" stop-color="#111b3d"/>
+    </linearGradient>
+    <linearGradient id="line" x1="0" y1="0" x2="1" y2="0">
+      <stop stop-color="#00ff88"/>
+      <stop offset="1" stop-color="#28d7ff"/>
+    </linearGradient>
+    <filter id="glow"><feGaussianBlur stdDeviation="10" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <circle cx="1040" cy="80" r="220" fill="#00ff88" opacity=".07"/>
+  <circle cx="140" cy="600" r="280" fill="#28d7ff" opacity=".06"/>
+  <path d="M0 520 C180 470 250 545 390 490 S650 430 790 480 S1030 520 1200 420" fill="none" stroke="url(#line)" stroke-width="5" opacity=".8" filter="url(#glow)"/>
+  <rect x="72" y="74" width="1056" height="482" rx="28" fill="#11162e" fill-opacity=".8" stroke="#26345f" stroke-width="2"/>
+  <circle cx="112" cy="120" r="10" fill="#00ff88" filter="url(#glow)"/>
+  <text x="145" y="130" fill="#edf4ff" font-family="monospace" font-size="28" font-weight="700" letter-spacing="5">TRYTO<tspan fill="#00ff88">ATTACK</tspan>ME</text>
+  <text x="112" y="246" fill="#edf4ff" font-family="monospace" font-size="66" font-weight="800">DDoS POWER METER</text>
+  <text x="116" y="305" fill="#8b97b8" font-family="monospace" font-size="24">Live traffic telemetry • rate-limit shield • request logs</text>
+  <rect x="116" y="374" width="720" height="22" rx="11" fill="#080c20" stroke="#26345f"/>
+  <rect x="116" y="374" width="470" height="22" rx="11" fill="url(#line)"/>
+  <text x="116" y="450" fill="#00ff88" font-family="monospace" font-size="22">● MONITORING</text>
+  <text x="116" y="490" fill="#28d7ff" font-family="monospace" font-size="18">AUTHORIZED TESTING ONLY</text>
+  <text x="940" y="488" fill="#8b97b8" font-family="monospace" font-size="18">VERCEL / LIVE</text>
+</svg>

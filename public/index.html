@@ -3,89 +3,131 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>TRYTOATTACKME — DDoS Power Meter</title>
+<meta name="theme-color" content="#070a14">
+<meta name="color-scheme" content="dark">
+<meta name="description" content="Dashboard live untuk ukur traffic, lihat request diblokir, dan pantau ketahanan endpoint.">
+<meta name="author" content="TRYTOATTACKME">
+<link rel="canonical" href="https://trytoattackme.vercel.app/">
+<link rel="icon" type="image/svg+xml" href="/preview.svg">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="TRYTOATTACKME">
+<meta property="og:title" content="TRYTOATTACKME — Live DDoS Power Meter">
+<meta property="og:description" content="Pantau request, RPS, IP unik, latency, dan traffic yang diblokir secara live.">
+<meta property="og:url" content="https://trytoattackme.vercel.app/">
+<meta property="og:image" content="https://trytoattackme.vercel.app/preview.svg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="TRYTOATTACKME — Live DDoS Power Meter">
+<meta name="twitter:description" content="Live dashboard untuk ukur traffic dan efektivitas rate-limit.">
+<meta name="twitter:image" content="https://trytoattackme.vercel.app/preview.svg">
+<title>TRYTOATTACKME — Live DDoS Power Meter</title>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"TRYTOATTACKME","url":"https://trytoattackme.vercel.app/","description":"Live dashboard untuk monitor request, traffic, latency, dan rate-limit protection.","applicationCategory":"SecurityApplication","operatingSystem":"Web"}</script>
 <style>
-:root{--bg:#070a14;--card:#11162e;--line:#1c2347;--neon:#00ff88;--red:#ff2e4a;--amber:#ffb700;--muted:#8b8fa8;--text:#e8e9f0}
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:ui-monospace,Menlo,monospace;background:var(--bg);color:var(--text)}
-a{color:var(--neon)}
-header{position:sticky;top:0;z-index:20;background:rgba(7,10,20,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
-.hd{max-width:1400px;margin:0 auto;padding:12px 18px;display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}
-.brand{font-weight:900;letter-spacing:.1em;font-size:15px}
-.brand b{color:var(--neon)}
-.pills{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-.pill{border:1px solid var(--line);background:var(--card);padding:6px 10px;border-radius:999px;font-size:11px}
-.pill.live{border-color:var(--red);color:var(--red);animation:blink 1s infinite}
-@keyframes blink{50%{opacity:.6}}
-.wrap{max-width:1400px;margin:0 auto;padding:16px 18px 40px}
-.hero{display:grid;grid-template-columns:1.15fr .85fr;gap:12px}
-@media(max-width:980px){.hero{grid-template-columns:1fr}}
-.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px}
-.label{font-size:10px;letter-spacing:.14em;color:var(--muted);text-transform:uppercase}
-.big{font-size:32px;font-weight:900;line-height:1}
-.big small{font-size:12px;color:var(--muted);font-weight:400}
-.meter{height:14px;background:#0a0e24;border:1px solid var(--line);border-radius:999px;overflow:hidden;margin-top:10px;position:relative}
-.meter>i{display:block;height:100%;width:0%;background:linear-gradient(90deg,var(--neon),var(--amber) 55%,var(--red));transition:width .4s}
-.meter>span{position:absolute;inset:0;display:grid;place-items:center;font-size:10px;font-weight:800;letter-spacing:.08em}
-.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:12px}
-@media(max-width:900px){.kpis{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:520px){.kpis{grid-template-columns:1fr}}
-.kpi .v{font-size:26px;font-weight:800}
-.mini{font-size:11px;color:var(--muted)}
-.grid2{display:grid;grid-template-columns:1.55fr .9fr;gap:12px;margin-top:12px}
-@media(max-width:980px){.grid2{grid-template-columns:1fr}}
-.chart{height:320px}
-canvas{width:100%;height:100%;display:block}
-.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
-.btn{border:1px solid var(--line);background:var(--card);color:var(--text);padding:8px 11px;border-radius:10px;font:inherit;font-size:12px;cursor:pointer}
-.btn:hover{border-color:#2a3570}
-.btn.on{border-color:var(--neon);color:var(--neon)}
-.btn.bad{border-color:var(--red);color:var(--red)}
-input[type=number]{width:86px;background:#080c22;border:1px solid var(--line);color:var(--text);padding:6px 8px;border-radius:10px;font:inherit}
-.table-wrap{margin-top:12px;background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden}
-.th{padding:12px 14px;display:flex;justify-content:space-between;gap:10px;align-items:center;border-bottom:1px solid var(--line);flex-wrap:wrap}
-.tabs{display:flex;gap:6px}
-.tab{padding:6px 10px;border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--muted);font-size:11px;cursor:pointer}
-.tab.active{background:#0e1430;color:var(--text);border-color:#2a3570}
-table{width:100%;border-collapse:collapse;font-size:12px}
-th{color:var(--muted);font-weight:700;text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);font-size:10px;letter-spacing:.08em;text-transform:uppercase}
-td{padding:9px 12px;border-bottom:1px solid #151b3a;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-tr.bad{background:rgba(255,46,74,.07)}
-.badge{padding:3px 8px;border-radius:999px;font-size:10px;font-weight:800;border:1px solid}
-.badge.ok{color:var(--neon);border-color:rgba(0,255,136,.35);background:rgba(0,255,136,.12)}
-.badge.no{color:var(--red);border-color:rgba(255,46,74,.4);background:rgba(255,46,74,.14)}
-.cols{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:12px}
-@media(max-width:980px){.cols{grid-template-columns:1fr}}
-.list{font-size:12px}
-.item{display:flex;justify-content:space-between;gap:8px;padding:7px 0;border-bottom:1px solid #151b3a}
-.item:last-child{border:0}
-.bar{height:6px;background:#0a0e24;border:1px solid var(--line);border-radius:999px;overflow:hidden;margin-top:4px}
-.bar>i{display:block;height:100%;background:var(--neon);width:0%}
-code{background:#0a0e24;border:1px solid var(--line);padding:2px 6px;border-radius:6px}
+  :root{
+    --bg:#070a14; --bg2:#0b1022; --card:#121839; --card2:#151c3b;
+    --line:#1f2a52; --line2:#24315e; --text:#edf4ff; --muted:#8b97b8;
+    --neon:#00ff88; --cyan:#28d7ff; --red:#ff2e4a; --amber:#ffb700;
+    --r:16px; --r2:18px; --shadow:0 18px 60px rgba(0,0,0,.28);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{background:var(--bg);scrollbar-color:var(--line2) transparent}
+  body{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;background:linear-gradient(180deg,var(--bg),var(--bg2));color:var(--text);min-height:100vh;line-height:1.5}
+  a{color:var(--neon);text-underline-offset:3px}
+  a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+  .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}
+
+  header{position:sticky;top:0;z-index:20;background:rgba(7,10,20,.82);backdrop-filter:blur(16px);border-bottom:1px solid rgba(64,86,150,.28)}
+  .hd{max-width:1400px;margin:0 auto;padding:14px 18px;display:flex;gap:16px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+  .brand{font-weight:800;letter-spacing:.1em;font-size:14px;display:flex;align-items:center;gap:8px}
+  .brand::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--neon);box-shadow:0 0 14px var(--neon)}
+  .brand b{color:var(--neon)}
+  .brand small{font-weight:400;color:var(--muted);letter-spacing:.03em}
+  .pills{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .pill{border:1px solid var(--line);background:rgba(17,22,46,.7);padding:6px 10px;border-radius:999px;font-size:11px}
+  .pill.live{border-color:rgba(255,46,74,.5);color:var(--red)}
+
+  .wrap{max-width:1400px;margin:0 auto;padding:24px 18px 40px}
+  .eyebrow{color:var(--cyan);font-size:10px;letter-spacing:.16em;margin-bottom:14px}
+  .card{background:linear-gradient(180deg,rgba(21,28,59,.92),rgba(12,17,39,.9));border:1px solid var(--line);border-radius:var(--r2);padding:16px;box-shadow:var(--shadow);position:relative}
+  .label{font-size:10px;letter-spacing:.12em;color:var(--muted);text-transform:uppercase}
+  .big{font-size:32px;font-weight:800;line-height:1;letter-spacing:-.03em}
+  .big small{font-size:12px;color:var(--muted);font-weight:400}
+
+  .hero{display:grid;grid-template-columns:1.2fr .8fr;gap:12px}
+  .meter{height:14px;background:#080c20;border:1px solid var(--line);border-radius:999px;overflow:hidden;margin-top:12px;position:relative}
+  .meter>i{display:block;height:100%;width:0%;background:linear-gradient(90deg,var(--neon),var(--amber) 55%,var(--red));transition:width .35s}
+  .meter>span{position:absolute;inset:0;display:grid;place-items:center;font-size:10px;font-weight:700;letter-spacing:.06em}
+
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:12px}
+  .kpi .v{font-size:26px;font-weight:800}
+  .mini{font-size:11px;color:var(--muted)}
+  .kpi{border-top:2px solid var(--line)}
+  .kpi:nth-child(1){border-top-color:var(--neon)} .kpi:nth-child(2){border-top-color:var(--cyan)} .kpi:nth-child(3){border-top-color:var(--red)} .kpi:nth-child(4){border-top-color:var(--amber)}
+
+  .grid2{display:grid;grid-template-columns:1.6fr .9fr;gap:12px;margin-top:12px}
+  .chart{height:320px}
+  canvas{width:100%;height:100%;display:block}
+  .list{font-size:12px}
+  .item{display:flex;justify-content:space-between;gap:8px;padding:7px 0;border-bottom:1px solid #151b3a}
+  .item:last-child{border:0}
+
+  .row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+  .btn{border:1px solid var(--line);background:rgba(9,14,34,.9);color:var(--text);padding:8px 12px;border-radius:10px;font:inherit;font-size:12px;cursor:pointer;min-height:36px}
+  .btn:hover{border-color:var(--line2);background:var(--card2)}
+  .btn:disabled{opacity:.5;cursor:not-allowed}
+  .btn.on{border-color:var(--neon);color:var(--neon)}
+  .btn.bad{border-color:rgba(255,46,74,.45);color:var(--red)}
+  input[type=number]{width:82px;background:#080c22;border:1px solid var(--line);color:var(--text);padding:6px 8px;border-radius:10px;font:inherit}
+
+  .table-wrap{margin-top:12px;background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+  .th{padding:12px 14px;display:flex;justify-content:space-between;gap:10px;align-items:center;border-bottom:1px solid var(--line);flex-wrap:wrap}
+  .tabs{display:flex;gap:6px}
+  .tab{padding:6px 10px;border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--muted);font-size:11px;cursor:pointer;min-height:32px}
+  .tab[aria-selected="true"]{background:#0e1430;color:var(--text);border-color:var(--line2)}
+  table{width:100%;border-collapse:collapse;font-size:12px}
+  th{color:var(--muted);font-weight:700;text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);font-size:10px;letter-spacing:.07em;text-transform:uppercase}
+  td{padding:9px 12px;border-bottom:1px solid #151b3a;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  tr.bad{background:rgba(255,46,74,.06)}
+  .badge{padding:3px 8px;border-radius:999px;font-size:10px;font-weight:800;border:1px solid}
+  .badge.ok{color:var(--neon);border-color:rgba(0,255,136,.3);background:rgba(0,255,136,.1)}
+  .badge.no{color:var(--red);border-color:rgba(255,46,74,.35);background:rgba(255,46,74,.12)}
+  .cols{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:12px}
+  .bar{height:6px;background:#0a0e24;border:1px solid var(--line);border-radius:999px;overflow:hidden;margin-top:4px}
+  .bar>i{display:block;height:100%;background:var(--neon);width:0%}
+  code{background:#080c20;border:1px solid var(--line);padding:2px 6px;border-radius:6px;color:var(--cyan);font-size:11px}
+  .section-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:22px 0 10px}
+  .section-head h2{font-size:12px;letter-spacing:.1em;text-transform:uppercase}
+  .footer{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;border-top:1px solid var(--line);margin-top:24px;padding-top:14px}
+
+  @media(max-width:980px){.hero,.grid2,.cols{grid-template-columns:1fr}}
+  @media(max-width:900px){.kpis{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:520px){.kpis{grid-template-columns:1fr} .wrap,.hd{padding-left:12px;padding-right:12px} .brand{font-size:12px} .brand small{display:none}}
+  @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
 <body>
 <header>
   <div class="hd">
-    <div class="brand">TRYTO<b>ATTACK</b>ME <span style="font-weight:400;color:var(--muted);letter-spacing:.04em">— DDoS POWER METER</span></div>
-    <div class="pills">
+    <div class="brand" aria-label="TRYTOATTACKME">TRYTO<b>ATTACK</b>ME <small>— DDoS POWER METER</small></div>
+    <div class="pills" aria-label="Status">
       <span class="pill" id="uptime">up 0s</span>
       <span class="pill" id="peak">peak 0 rps</span>
-      <span class="pill live" id="state">● MONITORING</span>
+      <span class="pill live" id="state" role="status" aria-live="polite">MONITORING</span>
     </div>
   </div>
 </header>
 
-<div class="wrap">
-  <div class="hero">
+<main class="wrap">
+  <p class="eyebrow">LIVE TELEMETRY · AUTHORIZED TESTING ONLY</p>
+
+  <section class="hero" aria-label="Power and shield">
     <div class="card">
       <div class="label">Attack Power</div>
       <div class="big" id="power">0% <small id="level">CALM</small></div>
-      <div class="meter"><i id="powerBar"></i><span id="powerText">0% — shield holding</span></div>
-      <div class="mini" style="margin-top:8px">Power = RPS + unique IP + block rate. 100% = nuke. Diukur live dari semua hit ke <code>/api/hit</code>.</div>
+      <div class="meter" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="meterWrap"><i id="powerBar"></i><span id="powerText">0% — shield holding</span></div>
+      <p class="mini" style="margin-top:8px">Power dari RPS + IP unik + block rate. 100% = beban penuh. Sumber: hit ke <code>/api/hit</code>.</p>
       <div style="display:flex;gap:12px;margin-top:12px;flex-wrap:wrap">
-        <span class="mini">endpoint uji: <code>/api/hit</code> (GET/POST apapun)</span>
-        <span class="mini">curl: <code id="curl">curl https://TRYTOATTACKME.vercel.app/api/hit</code></span>
+        <span class="mini">endpoint: <code>/api/hit</code></span>
+        <span class="mini">curl: <code id="curl">curl https://trytoattackme.vercel.app/api/hit</code></span>
       </div>
     </div>
     <div class="card">
@@ -94,173 +136,200 @@ code{background:#0a0e24;border:1px solid var(--line);padding:2px 6px;border-radi
         <span class="big" id="shield">ON</span>
         <span class="mini" id="shieldMeta">25 rps / burst 50 per IP — auto-ban 8 violations</span>
       </div>
-      <div class="row" style="margin-top:12px">
-        <label class="pill" style="display:flex;gap:8px;align-items:center">RPS <input id="rps" type="number" min="1" max="1000" value="25"></label>
-        <label class="pill" style="display:flex;gap:8px;align-items:center">Burst <input id="burst" type="number" min="1" max="2000" value="50"></label>
-        <button class="btn" onclick="saveCfg()">Save</button>
-        <button class="btn" onclick="toggleShield()" id="togBtn">Disable shield</button>
-        <button class="btn bad" onclick="clearAll()">Clear logs</button>
+      <div class="row">
+        <label class="pill" style="display:flex;gap:8px;align-items:center">RPS <input id="rps" type="number" min="1" max="1000" value="25" aria-label="RPS limit"></label>
+        <label class="pill" style="display:flex;gap:8px;align-items:center">Burst <input id="burst" type="number" min="1" max="2000" value="50" aria-label="Burst limit"></label>
+        <button class="btn" type="button" onclick="saveCfg()">Save</button>
+        <button class="btn" type="button" onclick="toggleShield()" id="togBtn">Disable shield</button>
+        <button class="btn bad" type="button" onclick="clearAll()">Clear logs</button>
       </div>
-      <div class="mini" style="margin-top:8px">Semua kontrol public — sengaja, biar tester bisa ukur dengan/without shield.</div>
+      <p class="mini" style="margin-top:8px">Kontrol public — sengaja untuk uji dengan dan tanpa shield.</p>
     </div>
-  </div>
+  </section>
 
-  <div class="kpis">
-    <div class="card kpi"><div class="label">Total Requests</div><div class="v" id="total">0</div><div class="mini"><span id="unique">0</span> unique IP • blocked <span id="blocked">0</span> (<span id="brate">0%</span>)</div></div>
-    <div class="card kpi"><div class="label">Current RPS</div><div class="v" id="curRps">0</div><div class="mini">avg 10s <span id="rps10">0</span> • 60s <span id="rps60">0</span></div></div>
-    <div class="card kpi"><div class="label">Blocked / sec</div><div class="v" id="curBlocked" style="color:var(--red)">0</div><div class="mini">last 10s <span id="b10">0</span> • 60s <span id="b60">0</span></div></div>
-    <div class="card kpi"><div class="label">Latency</div><div class="v" id="latAvg">0<small> ms avg</small></div><div class="mini">p50 <span id="p50">0</span> • p95 <span id="p95">0</span> • p99 <span id="p99">0</span></div></div>
-  </div>
+  <section class="kpis" aria-label="Key metrics">
+    <div class="card kpi"><div class="label">Total Requests</div><div class="v" id="total">0</div><div class="mini"><span id="unique">0</span> unique IP · blocked <span id="blocked">0</span> (<span id="brate">0%</span>)</div></div>
+    <div class="card kpi"><div class="label">Current RPS</div><div class="v" id="curRps">0</div><div class="mini">avg 10s <span id="rps10">0</span> · 60s <span id="rps60">0</span></div></div>
+    <div class="card kpi"><div class="label">Blocked / sec</div><div class="v" id="curBlocked" style="color:var(--red)">0</div><div class="mini">last 10s <span id="b10">0</span> · 60s <span id="b60">0</span></div></div>
+    <div class="card kpi"><div class="label">Latency</div><div class="v" id="latAvg">0<small> ms avg</small></div><div class="mini">p50 <span id="p50">0</span> · p95 <span id="p95">0</span> · p99 <span id="p99">0</span></div></div>
+  </section>
 
-  <div class="grid2">
-    <div class="card chart"><canvas id="chart"></canvas></div>
+  <div class="section-head"><h2>Traffic intelligence</h2><span class="mini">refresh 1s</span></div>
+  <section class="grid2" aria-label="Charts">
+    <div class="card chart"><canvas id="chart" role="img" aria-label="RPS and blocked history"></canvas></div>
     <div class="card" style="height:320px;overflow:auto">
       <div class="label">Top Attackers</div>
       <div id="topIps" class="list" style="margin-top:8px"></div>
     </div>
-  </div>
+  </section>
 
-  <div class="cols">
+  <section class="cols" aria-label="Breakdowns">
     <div class="card"><div class="label">Top Paths</div><div id="topPaths" class="list"></div></div>
     <div class="card"><div class="label">Top Countries</div><div id="topCountries" class="list"></div></div>
     <div class="card"><div class="label">Methods & Status</div><div id="mix" class="list"></div></div>
-  </div>
+  </section>
 
-  <div class="card" style="margin-top:12px">
+  <section class="card" style="margin-top:12px" aria-label="User agents">
     <div class="label">User-Agents</div>
     <div id="uas" class="list"></div>
-  </div>
+  </section>
 
-  <div class="table-wrap">
+  <section class="table-wrap" aria-label="Live requests">
     <div class="th">
-      <div style="display:flex;gap:10px;align-items:center"><b style="font-size:13px">LIVE REQUESTS</b> <span class="mini" id="rowCount">0 rows</span></div>
-      <div class="tabs">
-        <button class="tab active" data-f="all" onclick="setFilter('all')">All</button>
-        <button class="tab" data-f="blocked" onclick="setFilter('blocked')">Blocked</button>
-        <button class="tab" data-f="allowed" onclick="setFilter('allowed')">Allowed</button>
+      <div style="display:flex;gap:10px;align-items:center"><h2 style="font-size:13px">LIVE REQUESTS</h2> <span class="mini" id="rowCount">0 rows</span></div>
+      <div class="tabs" role="tablist" aria-label="Filter">
+        <button class="tab" type="button" role="tab" data-f="all" aria-selected="true" onclick="setFilter('all')">All</button>
+        <button class="tab" type="button" role="tab" data-f="blocked" aria-selected="false" onclick="setFilter('blocked')">Blocked</button>
+        <button class="tab" type="button" role="tab" data-f="allowed" aria-selected="false" onclick="setFilter('allowed')">Allowed</button>
       </div>
     </div>
     <div style="overflow:auto;max-height:560px">
       <table>
+        <caption class="sr-only">Recent requests</caption>
         <thead><tr><th>Time</th><th>IP</th><th>Country</th><th>Method</th><th>Path</th><th>Status</th><th>Latency</th><th>UA</th></tr></thead>
-        <tbody id="tbody"><tr><td colspan="8" style="text-align:center;color:var(--muted);padding:18px">no hits yet — attack <code>/api/hit</code></td></tr></tbody>
+        <tbody id="tbody"><tr><td colspan="8" style="text-align:center;color:var(--muted);padding:18px">no hits yet — hit <code>/api/hit</code></td></tr></tbody>
       </table>
     </div>
-  </div>
+  </section>
 
-  <div class="mini" style="margin-top:10px">Tip uji DDoS: <code>ab -n 10000 -c 100 https://DOMAIN/api/hit</code> atau <code>wrk -t8 -c200 -d30s https://DOMAIN/api/hit</code> — semua tercatat. Vercel limit execution 10s, rate shield di atas itu tambahan pengukuran.</div>
-</div>
+  <p class="mini" style="margin-top:10px">Uji terotorisasi: <code>ab -n 10000 -c 100 https://DOMAIN/api/hit</code></p>
+
+  <footer class="footer">
+    <span class="mini">TRYTOATTACKME · defensive traffic observability</span>
+    <span class="mini"><a href="/api/stats">stats</a> · <a href="/api/hit">test endpoint</a></span>
+  </footer>
+</main>
 
 <script>
-let filter='all';
-const escapeHtml = (value = '') => String(value)
-  .replace(/&/g, '&amp;')
-  .replace(/</g, '&lt;')
-  .replace(/>/g, '&gt;')
-  .replace(/"/g, '&quot;')
-  .replace(/'/g, '&#39;');
-const cv=document.getElementById('chart'),cx=cv.getContext('2d');
-let hist=[];
-function resize(){cv.width=cv.offsetWidth*2;cv.height=cv.offsetHeight*2;cx.setTransform(2,0,0,2,0,0)}
-function draw(){
- const w=cv.offsetWidth,h=cv.offsetHeight,p=30;
- cx.clearRect(0,0,w,h); cx.fillStyle='#11162e'; cx.fillRect(0,0,w,h);
- cx.strokeStyle='#1c2347'; cx.lineWidth=1;
- for(let i=0;i<=4;i++){const y=p+(h-p*2)*(i/4); cx.beginPath(); cx.moveTo(p,y); cx.lineTo(w-p,y); cx.stroke()}
- if(hist.length<2) return;
- const max=Math.max(...hist.map(x=>x.rps), 10);
- const step=(w-p*2)/119;
- // blocked area
- cx.fillStyle='rgba(255,46,74,.18)'; cx.beginPath();
- hist.forEach((pt,i)=>{const x=p+step*(120-hist.length+i), y=h-p-(h-p*2)*(pt.blocked/max); i?cx.lineTo(x,y):cx.moveTo(x,y)});
- cx.lineTo(p+step*119,h-p); cx.lineTo(p+step*(120-hist.length),h-p); cx.closePath(); cx.fill();
- // rps line
- cx.strokeStyle='#00ff88'; cx.lineWidth=1.7; cx.beginPath();
- hist.forEach((pt,i)=>{const x=p+step*(120-hist.length+i), y=h-p-(h-p*2)*(pt.rps/max); i?cx.lineTo(x,y):cx.moveTo(x,y)});
- cx.stroke();
- cx.fillStyle='#8b8fa8'; cx.font='10px monospace'; cx.fillText(max+' rps', p, p-6);
- cx.fillStyle='rgba(255,46,74,.9)'; cx.fillRect(p, h-p+8, 10, 6); cx.fillStyle='#8b8fa8'; cx.fillText('blocked', p+14, h-p+13);
-}
-addEventListener('resize',()=>{resize();draw()}); resize();
+const POLL_MS = 1000;
+const LOG_LIMIT = 150;
+let filter = "all";
 
-function setFilter(f){filter=f;document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.f===f));loadLogs()}
+const $ = (id) => document.getElementById(id);
+const esc = (v = "") => String(v).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;");
+
+const cv = $("chart"), cx = cv.getContext("2d");
+let hist = [];
+
+function resizeCanvas(){
+  cv.width = cv.offsetWidth * 2;
+  cv.height = cv.offsetHeight * 2;
+  cx.setTransform(2,0,0,2,0,0);
+}
+
+function drawChart(){
+  const w = cv.offsetWidth, h = cv.offsetHeight, pad = 30;
+  cx.clearRect(0,0,w,h);
+  cx.fillStyle = "#11162e";
+  cx.fillRect(0,0,w,h);
+  cx.strokeStyle = "#1c2347";
+  cx.lineWidth = 1;
+  for(let i=0;i<=4;i++){ const y = pad + (h - pad*2) * (i/4); cx.beginPath(); cx.moveTo(pad,y); cx.lineTo(w-pad,y); cx.stroke(); }
+  if(hist.length < 2) return;
+  const max = Math.max(...hist.map((x)=> x.rps), 10);
+  const step = (w - pad*2) / 119;
+
+  cx.fillStyle = "rgba(255,46,74,.18)";
+  cx.beginPath();
+  hist.forEach((pt,i)=>{ const x = pad + step*(120-hist.length+i), y = h-pad-(h-pad*2)*(pt.blocked/max); i ? cx.lineTo(x,y) : cx.moveTo(x,y); });
+  cx.lineTo(pad+step*119,h-pad); cx.lineTo(pad+step*(120-hist.length),h-pad); cx.closePath(); cx.fill();
+
+  cx.strokeStyle = "#00ff88"; cx.lineWidth = 1.6; cx.beginPath();
+  hist.forEach((pt,i)=>{ const x = pad + step*(120-hist.length+i), y = h-pad-(h-pad*2)*(pt.rps/max); i ? cx.lineTo(x,y) : cx.moveTo(x,y); });
+  cx.stroke();
+
+  cx.fillStyle = "#8b97b8"; cx.font = "10px monospace"; cx.fillText(max+" rps", pad, pad-6);
+  cx.fillStyle = "rgba(255,46,74,.9)"; cx.fillRect(pad,h-pad+8,10,6);
+  cx.fillStyle = "#8b97b8"; cx.fillText("blocked", pad+14, h-pad+13);
+}
+addEventListener("resize", ()=>{ resizeCanvas(); drawChart(); });
+resizeCanvas();
+
+function setFilter(f){
+  filter = f;
+  document.querySelectorAll(".tab").forEach((b)=> b.setAttribute("aria-selected", String(b.dataset.f === f)));
+  loadLogs();
+}
+
 async function loadStats(){
- const r=await fetch('/api/stats',{cache:'no-store'}); const s=await r.json();
- document.getElementById('total').textContent=s.total;
- document.getElementById('blocked').textContent=s.blocked;
- document.getElementById('brate').textContent=s.total?Math.round(s.blocked/s.total*100)+'%':'0%';
- document.getElementById('unique').textContent=s.unique;
- document.getElementById('curRps').textContent=s.curRps;
- document.getElementById('curBlocked').textContent=s.curBlocked;
- document.getElementById('rps10').textContent=s.rps10;
- document.getElementById('rps60').textContent=s.rps60;
- document.getElementById('b10').textContent=s.blocked10;
- document.getElementById('b60').textContent=s.blocked60;
- document.getElementById('latAvg').innerHTML=s.latency.avg+'<small> ms avg</small>';
- document.getElementById('p50').textContent=s.latency.p50; document.getElementById('p95').textContent=s.latency.p95; document.getElementById('p99').textContent=s.latency.p99;
- document.getElementById('power').innerHTML=s.power+'% <small>'+s.level+'</small>';
- document.getElementById('powerBar').style.width=s.power+'%';
- document.getElementById('powerText').textContent=s.power+'% — '+ (s.underAttack ? 'UNDER ATTACK' : 'shield holding');
- document.getElementById('uptime').textContent='up '+Math.floor(s.uptime/1000)+'s';
- document.getElementById('peak').textContent='peak '+s.peak+' rps';
- const st=document.getElementById('state');
- st.textContent=s.underAttack ? '⚠ UNDER ATTACK' : '● MONITORING';
- st.style.borderColor=s.underAttack?'var(--red)':'var(--line)'; st.style.color=s.underAttack?'var(--red)':'var(--muted)';
- document.getElementById('shield').textContent=s.config.protection?'ON':'OFF';
- document.getElementById('shield').style.color=s.config.protection?'var(--neon)':'var(--red)';
- document.getElementById('shieldMeta').textContent=s.config.rps+' rps / burst '+s.config.burst+' per IP — auto-ban 8 violations';
- document.getElementById('rps').value=s.config.rps; document.getElementById('burst').value=s.config.burst;
- document.getElementById('togBtn').textContent=s.config.protection?'Disable shield':'Enable shield';
- hist=s.history; draw();
- // top ips
- const tip=document.getElementById('topIps');
- tip.innerHTML=s.topIps.length? s.topIps.map(t=>{
-   const ip = escapeHtml(t.ip);
-   const rawIp = String(t.ip ?? '');
-   const city = escapeHtml(t.city);
-   const country = escapeHtml(t.country);
-   const topPath = escapeHtml(t.topPath);
-   return `
-  <div class="item"><div><b>${ip}</b> <span class="mini">${city !== '-' ? city + ', ' : ''}${country}</span> ${t.banned?'<span class="badge no" style="padding:1px 6px">BANNED</span>':''}<div class="mini">${t.hits} hits • blocked ${t.blocked} • ${topPath}</div></div><button class="btn" style="padding:4px 8px;font-size:11px" onclick="blockIp(${JSON.stringify(rawIp)},${t.banned})">${t.banned?'Unblock':'Block'}</button></div>
- `; }).join('') : '<span class="mini">no data — hit /api/hit</span>';
- document.getElementById('topPaths').innerHTML=s.topPaths.map(([p,c])=>`<div class="item"><span><code>${escapeHtml(p)}</code></span><b>${c}</b></div>`).join('')||'<span class="mini">-</span>';
- document.getElementById('topCountries').innerHTML=s.topCountries.map(([cc,c])=>`<div class="item"><span>${escapeHtml(cc)}</span><b>${c}</b></div>`).join('')||'<span class="mini">-</span>';
- const maxM=Math.max(...s.byMethod.map(([,c])=>c),1), maxS=Math.max(...s.byStatus.map(([,c])=>c),1);
- document.getElementById('mix').innerHTML=
-  '<div class="mini" style="margin-bottom:6px">methods</div>'+s.byMethod.map(([m,c])=>`<div class="mini">${escapeHtml(m)} ${c}</div><div class="bar"><i style="width:${c/maxM*100}%"></i></div>`).join('')+
-  '<div class="mini" style="margin:8px 0 6px">status</div>'+s.byStatus.map(([sc,c])=>`<div class="mini">${escapeHtml(sc)} ${c}</div><div class="bar"><i style="width:${c/maxS*100}%;background:${String(sc).startsWith('2')?'var(--neon)':'var(--red)'}"></i></div>`).join('');
- document.getElementById('uas').innerHTML=s.topUas.map(([ua,c])=>`<div class="item"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:78%">${escapeHtml(ua)}</span><b>${c}</b></div>`).join('')||'<span class="mini">-</span>';
- document.getElementById('curl').textContent='curl '+location.origin+'/api/hit';
+  const res = await fetch("/api/stats",{cache:"no-store"});
+  if(!res.ok) return;
+  const s = await res.json();
+
+  $("total").textContent = s.total;
+  $("blocked").textContent = s.blocked;
+  $("brate").textContent = s.total ? Math.round(s.blocked/s.total*100)+"%" : "0%";
+  $("unique").textContent = s.unique;
+  $("curRps").textContent = s.curRps;
+  $("curBlocked").textContent = s.curBlocked;
+  $("rps10").textContent = s.rps10;
+  $("rps60").textContent = s.rps60;
+  $("b10").textContent = s.blocked10;
+  $("b60").textContent = s.blocked60;
+  $("latAvg").innerHTML = s.latency.avg+"<small> ms avg</small>";
+  $("p50").textContent = s.latency.p50; $("p95").textContent = s.latency.p95; $("p99").textContent = s.latency.p99;
+  $("power").innerHTML = s.power+"% <small>"+esc(s.level)+"</small>";
+  $("powerBar").style.width = s.power+"%";
+  $("meterWrap").setAttribute("aria-valuenow", String(s.power));
+  $("powerText").textContent = s.power+"% — "+ (s.underAttack ? "UNDER ATTACK" : "shield holding");
+  $("uptime").textContent = "up "+Math.floor(s.uptime/1000)+"s";
+  $("peak").textContent = "peak "+s.peak+" rps";
+
+  const st = $("state");
+  st.textContent = s.underAttack ? "UNDER ATTACK" : "MONITORING";
+  st.style.color = s.underAttack ? "var(--red)" : "var(--muted)";
+  st.style.borderColor = s.underAttack ? "rgba(255,46,74,.5)" : "var(--line)";
+
+  $("shield").textContent = s.config.protection ? "ON" : "OFF";
+  $("shield").style.color = s.config.protection ? "var(--neon)" : "var(--red)";
+  $("shieldMeta").textContent = s.config.rps+" rps / burst "+s.config.burst+" per IP — auto-ban 8 violations";
+  $("rps").value = s.config.rps; $("burst").value = s.config.burst;
+  $("togBtn").textContent = s.config.protection ? "Disable shield" : "Enable shield";
+
+  hist = s.history || []; drawChart();
+
+  $("topIps").innerHTML = s.topIps.length ? s.topIps.map((t)=>{
+    const ip = esc(t.ip), city = esc(t.city), country = esc(t.country), topPath = esc(t.topPath);
+    const rawIp = String(t.ip ?? "");
+    return `<div class="item"><div><b>${ip}</b> <span class="mini">${city !== "-" ? city+", " : ""}${country}</span> ${t.banned?'<span class="badge no">BANNED</span>':""}<div class="mini">${t.hits} hits · blocked ${t.blocked} · ${topPath}</div></div><button class="btn" type="button" style="padding:4px 8px;font-size:11px;min-height:28px" onclick="blockIp(${JSON.stringify(rawIp)},${t.banned})">${t.banned?"Unblock":"Block"}</button></div>`;
+  }).join("") : '<span class="mini">no data — hit /api/hit</span>';
+
+  $("topPaths").innerHTML = s.topPaths.map(([p,c])=> `<div class="item"><span><code>${esc(p)}</code></span><b>${c}</b></div>`).join("") || '<span class="mini">-</span>';
+  $("topCountries").innerHTML = s.topCountries.map(([cc,c])=> `<div class="item"><span>${esc(cc)}</span><b>${c}</b></div>`).join("") || '<span class="mini">-</span>';
+
+  const maxM = Math.max(...s.byMethod.map(([,c])=> c),1), maxS = Math.max(...s.byStatus.map(([,c])=> c),1);
+  $("mix").innerHTML =
+    '<div class="mini" style="margin-bottom:6px">methods</div>'+ s.byMethod.map(([m,c])=> `<div class="mini">${esc(m)} ${c}</div><div class="bar"><i style="width:${c/maxM*100}%"></i></div>`).join("") +
+    '<div class="mini" style="margin:8px 0 6px">status</div>'+ s.byStatus.map(([sc,c])=> `<div class="mini">${esc(sc)} ${c}</div><div class="bar"><i style="width:${c/maxS*100}%;background:${String(sc).startsWith("2")?"var(--neon)":"var(--red)"}"></i></div>`).join("");
+  $("uas").innerHTML = s.topUas.map(([ua,c])=> `<div class="item"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:78%">${esc(ua)}</span><b>${c}</b></div>`).join("") || '<span class="mini">-</span>';
+  $("curl").textContent = "curl "+location.origin+"/api/hit";
 }
+
 async function loadLogs(){
- const r=await fetch('/api/logs?filter='+filter+'&limit=150',{cache:'no-store'}); const d=await r.json();
- document.getElementById('rowCount').textContent=d.logs.length+' rows';
- const tb=document.getElementById('tbody');
- if(!d.logs.length){tb.innerHTML='<tr><td colspan="8" style="text-align:center;color:var(--muted);padding:18px">no logs for filter</td></tr>';return}
- tb.innerHTML=d.logs.map(x=>{
-   const t=new Date(x.ts).toLocaleTimeString();
-   const badge=x.blocked?'<span class="badge no">429 BLOCKED</span>':'<span class="badge ok">200 OK</span>';
-   const ip = escapeHtml(x.ip || 'unknown');
-   const country = escapeHtml(x.country || '-');
-   const method = escapeHtml(x.method || 'GET');
-   const path = escapeHtml(x.path || '/');
-   const reason = escapeHtml(x.reason || '');
-   const ua = escapeHtml(x.ua || '-');
-   return `<tr class="${x.blocked?'bad':''}"><td>${escapeHtml(t)}</td><td>${ip}</td><td>${country}</td><td>${method}</td><td>${path}</td><td>${badge}${x.blocked?'<div class="mini">'+reason+'</div>':''}</td><td>${x.latency}ms</td><td title="${ua}">${ua.slice(0,42)}</td></tr>`;
- }).join('');
+  const res = await fetch("/api/logs?filter="+filter+"&limit="+LOG_LIMIT,{cache:"no-store"});
+  if(!res.ok) return;
+  const d = await res.json();
+  $("rowCount").textContent = d.logs.length+" rows";
+  const tb = $("tbody");
+  if(!d.logs.length){ tb.innerHTML = '<tr><td colspan="8" style="text-align:center;color:var(--muted);padding:18px">no logs for filter</td></tr>'; return; }
+  tb.innerHTML = d.logs.map((x)=>{
+    const t = new Date(x.ts).toLocaleTimeString();
+    const badge = x.blocked ? '<span class="badge no">429 BLOCKED</span>' : '<span class="badge ok">200 OK</span>';
+    return `<tr class="${x.blocked?"bad":""}"><td>${esc(t)}</td><td>${esc(x.ip)}</td><td>${esc(x.country)}</td><td>${esc(x.method)}</td><td>${esc(x.path)}</td><td>${badge}${x.blocked?'<div class="mini">'+esc(x.reason)+'</div>':""}</td><td>${x.latency}ms</td><td title="${esc(x.ua)}">${esc(String(x.ua||"-").slice(0,42))}</td></tr>`;
+  }).join("");
 }
-async function saveCfg(){
- const rps=parseInt(document.getElementById('rps').value), burst=parseInt(document.getElementById('burst').value);
- await fetch('/api/config',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({rps,burst})}); loadStats();
+
+async function postConfig(body){
+  await fetch("/api/config",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});
+  loadStats();
 }
-async function toggleShield(){
- const cur=document.getElementById('shield').textContent==='ON';
- await fetch('/api/config',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({protection:!cur})}); loadStats();
-}
-async function clearAll(){ await fetch('/api/config',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'clear'})}); loadStats(); loadLogs(); }
-async function blockIp(ip,banned){ await fetch('/api/config',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:banned?'unblock':'block',ip})}); loadStats(); loadLogs(); }
-setInterval(()=>{loadStats();loadLogs()},1000);
-loadStats();loadLogs();
+function saveCfg(){ postConfig({rps:parseInt($("rps").value,10), burst:parseInt($("burst").value,10)}); }
+function toggleShield(){ const on = $("shield").textContent === "ON"; postConfig({protection:!on}); }
+function clearAll(){ postConfig({action:"clear"}); loadLogs(); }
+function blockIp(ip,banned){ postConfig({action:banned?"unblock":"block", ip}); loadLogs(); }
+
+setInterval(()=>{ loadStats(); loadLogs(); }, POLL_MS);
+loadStats(); loadLogs();
 </script>
 </body>
 </html>
